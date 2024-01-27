@@ -1,0 +1,5 @@
+# ninja log v5
+407	512	1706378271996026327	BigInt	b2f198bd4f08789e
+0	455	1706379203814483155	CMakeFiles/BigInteger.dir/main.cpp.o	ca15661df08cb1db
+1	457	1706379203814482488	CMakeFiles/BigInteger.dir/BigInteger.cpp.o	72bef724dbe47c87
+457	545	1706379203906048521	BigInteger	d7fa35f255b2f16

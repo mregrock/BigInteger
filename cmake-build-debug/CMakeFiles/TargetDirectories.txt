@@ -1,0 +1,3 @@
+/Users/mregrock/CLionProjects/BigInteger/cmake-build-debug/CMakeFiles/BigInteger.dir
+/Users/mregrock/CLionProjects/BigInteger/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/mregrock/CLionProjects/BigInteger/cmake-build-debug/CMakeFiles/rebuild_cache.dir
