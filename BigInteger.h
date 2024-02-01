@@ -8,22 +8,33 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
+#include <bitset>
+#define CHUNK_SIZE (1 << 32)
+#define chunk_t int
 
 class BigInteger {
-    int precision_;
-    int base_;
-    int a;
+    int precision_ = 100;
+    int base_ = 0;
+    std::vector<chunk_t> integral_;
+    std::vector<chunk_t> fraction_;
+
 public:
     BigInteger();
 
-    BigInteger(std::string);
+    BigInteger(const std::string &);
 
     ~BigInteger();
 
-    friend const BigInteger operator+(BigInteger, const BigInteger &);
+    friend BigInteger operator+(const BigInteger &, const BigInteger &);
+
+
 
     friend std::ostream &operator<<(std::ostream &, const BigInteger &);
+
 };
+
+BigInteger operator ""_bi(const char *);
 
 
 #endif //BIGINT_BIGINTEGER_H

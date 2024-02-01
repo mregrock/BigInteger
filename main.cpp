@@ -2,8 +2,6 @@
 #include "BigInteger.h"
 
 int main() {
-    BigInteger a("5");
-    BigInteger b("213");
-    std::cout << a + b;
+    BigInteger a = 12331233123.123123123_bi;
     return 0;
 }
