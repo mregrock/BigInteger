@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include <bitset>
+
 #define CHUNK_SIZE (1 << 32)
 #define chunk_t int
 
@@ -27,7 +28,6 @@ public:
     ~BigInteger();
 
     friend BigInteger operator+(const BigInteger &, const BigInteger &);
-
 
 
     friend std::ostream &operator<<(std::ostream &, const BigInteger &);

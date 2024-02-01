@@ -11,14 +11,25 @@ BigInteger::BigInteger() {
 
 BigInteger::BigInteger(const std::string &str_num) {
     int index = static_cast<int>(str_num.find('.'));
-    std::size_t str_size = str_num.size();
-    std::size_t integral_size = index;
-    this->integral_.assign(integral_size, 0);
-    for (int i = 0; i < integral_size; i++) {
-        this->integral_[integral_size - i] = str_num[i] - '0';
-    }
-    for (int i = index + 1; i < str_size; i++) {
-        this->fraction_[i - index - 1] = str_num[i] - '0';
+    std::string next_str;
+    int count_bit = 0;
+    int chunk_num = 0;
+    while (next_str != "0"){
+        std::size_t str_num_size = str_num.size();
+        int num = 0;
+        for (int i = 0; i < str_num_size; i++){
+            num = num * 10 + (str_num[i] - '0');
+            if (num > 2){
+                next_str.push_back(static_cast<char>(num / 2));
+                num = num % 2;
+            }
+        }
+        this->integral_[chunk_num] += (num << count_bit);
+        count_bit += 1;
+        if (count_bit == 32){
+            count_bit = 0;
+            chunk_num++;
+        }
     }
 }
 
