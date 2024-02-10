@@ -4,12 +4,50 @@
 
 #include "BigInteger.h"
 
+namespace {
+    std::string MultByTwo(const std::string &str_num) {
+        std::string result;
+        int str_size = static_cast<int>(str_num.size());
+        int remainder = 0;
+        for (int i = str_size - 1; i >= 0; i--) {
+            int digit_result = ((str_num[i] - '0') * 2);
+            result.push_back(static_cast<char>(digit_result % 10 + remainder + '0'));
+            remainder = digit_result / 10;
+        }
+        if (remainder != 0) {
+            result.push_back('1');
+        }
+        std::reverse(result.begin(), result.end());
+        return result;
+    }
+
+    std::string Inc(const std::string &str_num) {
+        std::string result;
+        int str_size = static_cast<int>(str_num.size());
+        int remainder = 1;
+        for (int i = str_size - 1; i >= 0; i--) {
+            int digit_result = ((str_num[i] - '0') + remainder);
+            result.push_back(static_cast<char>(digit_result % 10 + '0'));
+            remainder = digit_result / 10;
+        }
+        if (remainder != 0) {
+            result.push_back('1');
+        }
+        std::reverse(result.begin(), result.end());
+        return result;
+    }
+}
 
 BigInteger::BigInteger() {
     this->fraction_.assign(precision_, 0);
     this->integral_.assign(base_, 0);
     this->integral_size_ = 0;
     this->fraction_size_ = 0;
+}
+
+BigInteger::~BigInteger() {
+    this->integral_.clear();
+    this->fraction_.clear();
 }
 
 chunk_t BigInteger::GetChunk(const int &i) const {
@@ -23,6 +61,17 @@ chunk_t BigInteger::GetChunk(const int &i) const {
 void BigInteger::AddChunk(const chunk_t &num) {
     this->integral_.push_back(num);
     this->integral_size_++;
+}
+
+void BigInteger::PopChunk() {
+    this->integral_.pop_back();
+    this->integral_size_--;
+}
+
+void BigInteger::TrimLeadingZeroes() {
+    while (*this->integral_.rbegin() == 0 && this->integral_size_ > 1) {
+        this->PopChunk();
+    }
 }
 
 const std::vector<chunk_t> &BigInteger::GetIntegral() const {
@@ -64,18 +113,26 @@ BigInteger::BigInteger(std::string str_num) {
     this->fraction_size_ = this->fraction_.size();
 }
 
-BigInteger::~BigInteger() {
-    this->integral_.clear();
-    this->fraction_.clear();
-}
-
-
-std::string BigInteger::ToString() {
-    std::string string_decimal;
-    for (int i = 0; i < this->integral_size_; i++) {
-        string_decimal.push_back(0);
+std::string BigInteger::ToString() const {
+    std::string result = "0";
+    int integral_size = static_cast<int>(this->integral_size_);
+    bool not_zero = false;
+    for (int i = integral_size - 1; i >= 0; i--) {
+        for (int j = CHUNK_SIZE - 1; j >= 0; j--) {
+            if (!not_zero) {
+                if (((1ull << j) & this->integral_[i])) {
+                    not_zero = true;
+                }
+            }
+            if (not_zero) {
+                result = MultByTwo(result);
+                if (((1ull << j) & this->integral_[i])) {
+                    result = Inc(result);
+                }
+            }
+        }
     }
-    return string_decimal;
+    return result;
 }
 
 void BigInteger::SetSizeInChunks(const std::size_t &size) {
@@ -88,6 +145,12 @@ void BigInteger::SetChunk(const int &index, const chunk_t &num) {
         this->AddChunk(0);
     }
     this->integral_[index] = num;
+}
+
+BigInteger BigInteger::operator=(const BigInteger &other) {
+    this->integral_ = other.GetIntegral();
+    this->integral_size_ = other.GetSizeInChunks();
+    return *this;
 }
 
 BigInteger operator*(const BigInteger &first, const BigInteger &second) {
@@ -106,10 +169,7 @@ BigInteger operator*(const BigInteger &first, const BigInteger &second) {
             //res.SetChunk
         }
     }
-    auto &res_integral = const_cast<std::vector<chunk_t> &>(res.GetIntegral());
-    while (*res_integral.rbegin() == 0) {
-        res_integral.pop_back();
-    }
+    res.TrimLeadingZeroes();
     return res;
 }
 
@@ -133,18 +193,38 @@ BigInteger operator+(const BigInteger &first, const BigInteger &second) {
     return result;
 }
 
-std::ostream &operator<<(std::ostream &out, const BigInteger &number) {
-    const std::vector<chunk_t> &integral = number.GetIntegral();
-    std::size_t integral_size = integral.size();
-    for (int i = 0; i < integral_size; i++) {
+BigInteger BigInteger::operator+=(const BigInteger &other) {
+    return (*this = *this + other);
+}
 
+BigInteger BigInteger::operator*=(const BigInteger &other) {
+    return (*this = *this * other);
+}
+
+BigInteger BigInteger::pow(const BigInteger &num, const int &times) const {
+    BigInteger result = 1_bi;
+    for (int i = 0; i < times; i++) {
+        result *= num;
     }
+    return result;
+}
+
+std::ostream &operator<<(std::ostream &out, const BigInteger &number) {
+    out << number.ToString();
+    return out;
+}
+
+BigInteger::BigInteger(
+        const BigInteger &other) {
+    this->integral_ = other.GetIntegral();
+    this->integral_size_ = other.GetSizeInChunks();
+
+}
+
+std::size_t BigInteger::GetSizeInChunks() const {
+    return this->integral_size_;
 }
 
 BigInteger operator ""_bi(const char *s) {
     return BigInteger{s};
 }
-
-
-
-
