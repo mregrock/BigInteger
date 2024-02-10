@@ -22,6 +22,7 @@ class BigInteger {
     std::vector<chunk_t> fraction_;
     std::size_t integral_size_;
     std::size_t fraction_size_;
+
 public:
     BigInteger();
 
@@ -29,14 +30,21 @@ public:
 
     ~BigInteger();
 
+    BigInteger(const BigInteger &);
+
     friend BigInteger operator+(const BigInteger &, const BigInteger &);
 
+    BigInteger operator+=(const BigInteger &);
+
+    BigInteger operator=(const BigInteger &);
+
+    BigInteger operator*=(const BigInteger &);
 
     friend BigInteger operator*(const BigInteger &, const BigInteger &);
 
     friend std::ostream &operator<<(std::ostream &, const BigInteger &);
 
-    std::string ToString();
+    std::string ToString() const;
 
     const std::vector<chunk_t> &GetIntegral() const;
 
@@ -46,7 +54,13 @@ public:
 
     void SetSizeInChunks(const std::size_t &);
 
+    BigInteger pow(const BigInteger &, const int &times) const;
+
     std::size_t GetSizeInChunks() const;
+
+    void PopChunk();
+
+    void TrimLeadingZeroes();
 
     void AddChunk(const chunk_t &);
 
