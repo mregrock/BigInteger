@@ -15,58 +15,60 @@
 typedef unsigned long long chunk_t;
 #define MAX_CHUNK (1ull << CHUNK_SIZE)
 
-class BigInteger {
-    int precision_ = 100;
-    int base_ = 0;
-    std::vector<chunk_t> integral_;
-    std::vector<chunk_t> fraction_;
-    std::size_t integral_size_;
-    std::size_t fraction_size_;
+namespace big_num {
+    class BigInteger {
+        int precision_ = 100;
+        int base_ = 0;
+        std::vector<chunk_t> integral_;
+        std::vector<chunk_t> fraction_;
+        std::size_t integral_size_;
+        std::size_t fraction_size_;
 
-public:
-    BigInteger();
+    public:
+        BigInteger();
 
-    explicit BigInteger(std::string);
+        explicit BigInteger(std::string);
 
-    ~BigInteger();
+        ~BigInteger();
 
-    BigInteger(const BigInteger &);
+        BigInteger(const BigInteger &);
 
-    friend BigInteger operator+(const BigInteger &, const BigInteger &);
+        friend BigInteger operator+(const BigInteger &, const BigInteger &);
 
-    BigInteger operator+=(const BigInteger &);
+        BigInteger operator+=(const BigInteger &);
 
-    BigInteger operator=(const BigInteger &);
+        BigInteger operator=(const BigInteger &);
 
-    BigInteger operator*=(const BigInteger &);
+        BigInteger operator*=(const BigInteger &);
 
-    friend BigInteger operator*(const BigInteger &, const BigInteger &);
+        friend BigInteger operator*(const BigInteger &, const BigInteger &);
 
-    friend std::ostream &operator<<(std::ostream &, const BigInteger &);
+        friend std::ostream &operator<<(std::ostream &, const BigInteger &);
 
-    std::string ToString() const;
+        std::string ToString() const;
 
-    const std::vector<chunk_t> &GetIntegral() const;
+        const std::vector<chunk_t> &GetIntegral() const;
 
-    chunk_t GetChunk(const int &) const;
+        chunk_t GetChunk(const int &) const;
 
-    void SetChunk(const int &, const chunk_t &);
+        void SetChunk(const int &, const chunk_t &);
 
-    void SetSizeInChunks(const std::size_t &);
+        void SetSizeInChunks(const std::size_t &);
 
-    BigInteger pow(const BigInteger &, const int &times) const;
+        BigInteger pow(const BigInteger &, const int &times) const;
 
-    std::size_t GetSizeInChunks() const;
+        std::size_t GetSizeInChunks() const;
 
-    void PopChunk();
+        void PopChunk();
 
-    void TrimLeadingZeroes();
+        void TrimLeadingZeroes();
 
-    void AddChunk(const chunk_t &);
+        void AddChunk(const chunk_t &);
 
-};
+    };
 
-BigInteger operator ""_bi(const char *);
+}
 
+big_num::BigInteger operator ""_bi(const char *);
 
 #endif //BIGINT_BIGINTEGER_H
