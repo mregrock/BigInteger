@@ -4,7 +4,7 @@
 
 #include "BigInteger.h"
 
-namespace {
+namespace str_ops {
     std::string MultByTwo(const std::string &str_num) {
         std::string result;
         int str_size = static_cast<int>(str_num.size());
@@ -36,6 +36,23 @@ namespace {
         std::reverse(result.begin(), result.end());
         return result;
     }
+
+    std::string operator>>(std::string str_num, int shift) {
+        int shift_with_size = (shift < str_num.size() ? shift : static_cast<int>(str_num.size()));
+        str_num.erase(str_num.end() - shift_with_size, str_num.end());
+        if (str_num.empty()) {
+            str_num.push_back('0');
+        }
+        return str_num;
+    }
+
+    std::string operator<<(std::string str_num, int shift) {
+        for (int i = 0; i < shift; i++) {
+            str_num.push_back('0');
+        }
+        return str_num;
+    }
+
 }
 
 namespace big_num {
@@ -126,13 +143,51 @@ namespace big_num {
                     }
                 }
                 if (not_zero) {
-                    result = MultByTwo(result);
+                    result = str_ops::MultByTwo(result);
                     if (((1ull << j) & this->integral_[i])) {
-                        result = Inc(result);
+                        result = str_ops::Inc(result);
                     }
                 }
             }
         }
+        return result;
+    }
+
+    std::string BigInteger::ToBinaryString() const {
+        std::string result;
+        int integral_size = static_cast<int>(this->integral_size_);
+        bool not_zero = false;
+        for (int i = integral_size - 1; i >= 0; i--) {
+            for (int j = CHUNK_SIZE - 1; j >= 0; j--) {
+                if (!not_zero) {
+                    if (((1ull << j) & this->integral_[i])) {
+                        not_zero = true;
+                    }
+                }
+                if (not_zero) {
+                    result.push_back(static_cast<char>((((1ull << j) & this->integral_[i]) >> j) + '0'));
+                }
+            }
+        }
+        return result;
+    }
+
+    BigInteger BigInteger::CreateFromBinary(std::string &bin_str) {
+        BigInteger result;
+        result.AddChunk(0);
+        int bin_str_size = static_cast<int>(bin_str.size());
+        int count_bit = 0;
+        int num_chunk = 0;
+        for (int i = bin_str_size - 1; i >= 0; i--) {
+            result.integral_[num_chunk] += (static_cast<long long>(bin_str[i] - '0') << count_bit);
+            count_bit++;
+            if (count_bit == 32) {
+                count_bit = 0;
+                num_chunk++;
+                result.AddChunk(0);
+            }
+        }
+        result.TrimLeadingZeroes();
         return result;
     }
 
@@ -154,33 +209,13 @@ namespace big_num {
         return *this;
     }
 
-    BigInteger operator*(const BigInteger &first, const BigInteger &second) {
-        const std::vector<chunk_t> &first_integral = first.GetIntegral();
-        const std::vector<chunk_t> &second_integral = second.GetIntegral();
-        const std::size_t &first_integral_size = first_integral.size();
-        const std::size_t &second_integral_size = second_integral.size();
-        BigInteger res;
-        res.SetSizeInChunks(first_integral.size() + second_integral.size() + 1);
-        for (auto i = 0; i < first_integral_size; ++i) {
-            for (auto j = 0; j < second_integral_size; ++j) {
-                chunk_t chunk_res = first_integral[i] * second_integral[j];
-                chunk_t chunk_set_res = res.GetChunk(i + j) + chunk_res;
-                res.SetChunk(i + j, chunk_set_res % MAX_CHUNK);
-                res.SetChunk(i + j + 1, res.GetChunk(i + j + 1) + (chunk_set_res) / MAX_CHUNK);
-                //res.SetChunk
-            }
-        }
-        res.TrimLeadingZeroes();
-        return res;
-    }
-
     BigInteger operator+(const BigInteger &first, const BigInteger &second) {
         std::size_t new_size = (first.integral_size_ > second.integral_size_ ? first.integral_size_
                                                                              : second.integral_size_);
         BigInteger result;
         chunk_t remainder = 0;
         for (int i = 0; i < new_size; i++) {
-            chunk_t chunks_sum = first.GetChunk(i) + second.GetChunk(i) + remainder;
+            chunk_t chunks_sum = first.integral_[i] + second.integral_[i] + remainder;
             remainder = 0;
             if (chunks_sum > MAX_CHUNK) {
                 chunks_sum = chunks_sum % MAX_CHUNK;
@@ -198,8 +233,32 @@ namespace big_num {
         return (*this = *this + other);
     }
 
+    BigInteger operator*(const BigInteger &first, const BigInteger &second) {
+        BigInteger res;
+        res.SetSizeInChunks(first.integral_size_ + second.integral_size_ + 1);
+        for (auto i = 0; i < first.integral_size_; ++i) {
+            for (auto j = 0; j < second.integral_size_; ++j) {
+                chunk_t chunk_res = first.integral_[i] * second.integral_[j];
+                chunk_t chunk_set_res = res.GetChunk(i + j) + chunk_res;
+                res.SetChunk(i + j, chunk_set_res % MAX_CHUNK);
+                res.SetChunk(i + j + 1, res.GetChunk(i + j + 1) + (chunk_set_res) / MAX_CHUNK);
+                //res.SetChunk
+            }
+        }
+        res.TrimLeadingZeroes();
+        return res;
+    }
+
+
     BigInteger BigInteger::operator*=(const BigInteger &other) {
         return (*this = *this * other);
+    }
+
+    BigInteger operator/(const BigInteger &left_num, const BigInteger &right_num) {
+        BigInteger res;
+        BigInteger bin_search_num;
+
+
     }
 
     bool operator==(const BigInteger &left_num, const BigInteger &right_num) {
@@ -248,6 +307,19 @@ namespace big_num {
         return ((left_num > right_num) || (left_num == right_num));
     }
 
+    BigInteger operator>>(const BigInteger &num, int shift) {
+        std::string bin_num = num.ToBinaryString();
+        std::string shifted_num = str_ops::operator>>(bin_num, shift);
+        return BigInteger::CreateFromBinary(shifted_num);
+    }
+
+    BigInteger operator<<(const BigInteger &num, int shift){
+        std::string bin_num = num.ToBinaryString();
+        std::string shifted_num = str_ops::operator<<(bin_num, shift);
+        return BigInteger::CreateFromBinary(shifted_num);
+    }
+
+
     BigInteger BigInteger::pow(const BigInteger &num, const int &times) const {
         BigInteger result = 1_bi;
         for (int i = 0; i < times; i++) {
@@ -256,10 +328,6 @@ namespace big_num {
         return result;
     }
 
-    std::ostream &operator<<(std::ostream &out, const BigInteger &number) {
-        out << number.ToString();
-        return out;
-    }
 
     BigInteger::BigInteger(const BigInteger &other) {
         this->integral_ = other.GetIntegral();
@@ -278,8 +346,28 @@ namespace big_num {
         return in;
     }
 
+    std::ostream &operator<<(std::ostream &out, const BigInteger &number) {
+        out << number.ToString();
+        return out;
+    }
 }
 
 big_num::BigInteger operator ""_bi(const char *s) {
     return big_num::BigInteger{s};
+}
+
+std::string operator>>(std::string str_num, int shift) {
+    int shift_with_size = (shift < str_num.size() ? shift : static_cast<int>(str_num.size()));
+    str_num.erase(str_num.end() - shift_with_size, str_num.end());
+    if (str_num.empty()) {
+        str_num.push_back('0');
+    }
+    return str_num;
+}
+
+std::string operator<<(std::string str_num, int shift) {
+    for (int i = 0; i < shift; i++) {
+        str_num.push_back('0');
+    }
+    return str_num;
 }

@@ -12,6 +12,10 @@ int main() {
     std::cout << (c == c_2) << "\n";
     big_num::BigInteger first{"0"};
     big_num::BigInteger second = 0_bi;
-    std::cout << (first >= second);
+    std::cout << (first >= second) << "\n";
+    std::string c_binary = c.ToBinaryString();
+    std::cout << c_binary << "\n";
+    std::cout << (c >> 5) << "\n";
+    std::cout << (c << 5);
     return 0;
 }

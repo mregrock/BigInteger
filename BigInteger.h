@@ -57,11 +57,19 @@ namespace big_num {
 
         friend bool operator>=(const BigInteger &, const BigInteger &);
 
+        friend BigInteger operator>>(const BigInteger &, int);
+
+        friend BigInteger operator<<(const BigInteger &, int);
+
         friend std::ostream &operator<<(std::ostream &, const BigInteger &);
 
         friend std::istream &operator>>(std::istream &, BigInteger &);
 
         [[nodiscard]] std::string ToString() const;
+
+        [[nodiscard]] std::string ToBinaryString() const;
+
+        [[nodiscard]] static BigInteger CreateFromBinary(std::string &);
 
         [[nodiscard]] const std::vector<chunk_t> &GetIntegral() const;
 
@@ -86,5 +94,6 @@ namespace big_num {
 }
 
 big_num::BigInteger operator ""_bi(const char *);
+
 
 #endif //BIGINT_BIGINTEGER_H
