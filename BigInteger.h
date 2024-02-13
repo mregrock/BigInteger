@@ -37,27 +37,43 @@ namespace big_num {
 
         BigInteger operator+=(const BigInteger &);
 
-        BigInteger operator=(const BigInteger &);
-
-        BigInteger operator*=(const BigInteger &);
+        BigInteger &operator=(const BigInteger &);
 
         friend BigInteger operator*(const BigInteger &, const BigInteger &);
 
+        BigInteger operator*=(const BigInteger &);
+
+        friend BigInteger operator/(const BigInteger &, const BigInteger &);
+
+        BigInteger operator/=(const BigInteger &);
+
+        friend bool operator==(const BigInteger &, const BigInteger &);
+
+        friend bool operator<(const BigInteger &, const BigInteger &);
+
+        friend bool operator>(const BigInteger &, const BigInteger &);
+
+        friend bool operator<=(const BigInteger &, const BigInteger &);
+
+        friend bool operator>=(const BigInteger &, const BigInteger &);
+
         friend std::ostream &operator<<(std::ostream &, const BigInteger &);
 
-        std::string ToString() const;
+        friend std::istream &operator>>(std::istream &, BigInteger &);
 
-        const std::vector<chunk_t> &GetIntegral() const;
+        [[nodiscard]] std::string ToString() const;
 
-        chunk_t GetChunk(const int &) const;
+        [[nodiscard]] const std::vector<chunk_t> &GetIntegral() const;
+
+        [[nodiscard]] chunk_t GetChunk(const int &) const;
 
         void SetChunk(const int &, const chunk_t &);
 
         void SetSizeInChunks(const std::size_t &);
 
-        BigInteger pow(const BigInteger &, const int &times) const;
+        [[nodiscard]] BigInteger pow(const BigInteger &, const int &times) const;
 
-        std::size_t GetSizeInChunks() const;
+        [[nodiscard]] std::size_t GetSizeInChunks() const;
 
         void PopChunk();
 

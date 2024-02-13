@@ -84,7 +84,7 @@ namespace big_num {
         std::string next_str;
         int count_bit = 0;
         int chunk_num = 0;
-        this->integral_.push_back(0);
+        this->AddChunk(0);
         while (str_num != "1" && str_num != "0") {
             next_str.clear();
             std::size_t str_num_size = str_num.size();
@@ -109,7 +109,7 @@ namespace big_num {
             }
             str_num = next_str;
         }
-        this->integral_[chunk_num] += ((std::stoll(next_str)) << count_bit);
+        this->integral_[chunk_num] += ((std::stoll(str_num)) << count_bit);
         this->integral_size_ = this->integral_.size();
         this->fraction_size_ = this->fraction_.size();
     }
@@ -148,7 +148,7 @@ namespace big_num {
         this->integral_[index] = num;
     }
 
-    BigInteger BigInteger::operator=(const BigInteger &other) {
+    BigInteger &BigInteger::operator=(const BigInteger &other) {
         this->integral_ = other.GetIntegral();
         this->integral_size_ = other.GetSizeInChunks();
         return *this;
@@ -202,6 +202,52 @@ namespace big_num {
         return (*this = *this * other);
     }
 
+    bool operator==(const BigInteger &left_num, const BigInteger &right_num) {
+        std::size_t size_left = left_num.GetSizeInChunks();
+        std::size_t size_right = right_num.GetSizeInChunks();
+        if (size_left != size_right) {
+            return false;
+        }
+        for (int i = 0; i < size_left; i++) {
+            if (left_num.GetChunk(i) != right_num.GetChunk(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool operator<(const BigInteger &left_num, const BigInteger &right_num) {
+        int size_left = static_cast<int>(left_num.GetSizeInChunks());
+        std::size_t size_right = right_num.GetSizeInChunks();
+        if (size_left < size_right) {
+            return true;
+        }
+        if (size_left > size_right) {
+            return false;
+        }
+        for (int i = size_left - 1; i >= 0; i--) {
+            if (left_num.GetChunk(i) < right_num.GetChunk(i)) {
+                return true;
+            }
+            if (left_num.GetChunk(i) > right_num.GetChunk(i)) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    bool operator<=(const BigInteger &left_num, const BigInteger &right_num) {
+        return ((left_num < right_num) || (left_num == right_num));
+    }
+
+    bool operator>(const BigInteger &left_num, const BigInteger &right_num) {
+        return !(left_num < right_num);
+    }
+
+    bool operator>=(const BigInteger &left_num, const BigInteger &right_num) {
+        return ((left_num > right_num) || (left_num == right_num));
+    }
+
     BigInteger BigInteger::pow(const BigInteger &num, const int &times) const {
         BigInteger result = 1_bi;
         for (int i = 0; i < times; i++) {
@@ -215,8 +261,7 @@ namespace big_num {
         return out;
     }
 
-    BigInteger::BigInteger(
-            const BigInteger &other) {
+    BigInteger::BigInteger(const BigInteger &other) {
         this->integral_ = other.GetIntegral();
         this->integral_size_ = other.GetSizeInChunks();
 
@@ -226,7 +271,15 @@ namespace big_num {
         return this->integral_size_;
     }
 
+    std::istream &operator>>(std::istream &in, BigInteger &num) {
+        std::string str_num;
+        in >> str_num;
+        num = BigInteger{str_num};
+        return in;
+    }
+
 }
+
 big_num::BigInteger operator ""_bi(const char *s) {
     return big_num::BigInteger{s};
 }
