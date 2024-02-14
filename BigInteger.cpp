@@ -231,9 +231,9 @@ namespace big_num {
     BigInteger operator+(const BigInteger &first, const BigInteger &second) {
         if (first.is_positive_ ^ second.is_positive_) {
             if (first.is_positive_) {
-                return first - (-second);
+                return first - second;
             }
-            return second - (-first);
+            return second - first;
         }
         std::size_t new_size = (first.integral_size_ > second.integral_size_ ? first.integral_size_
                                                                              : second.integral_size_);
@@ -252,6 +252,9 @@ namespace big_num {
             result.AddChunk(remainder);
         }
         result.TrimLeadingZeroes();
+        if (!first.is_positive_ && !second.is_positive_) {
+            result.is_positive_ = false;
+        }
         return result;
     }
 
@@ -263,7 +266,13 @@ namespace big_num {
         BigInteger first(first_num);
         BigInteger second(second_num);
         BigInteger result;
-        if (first < second) {
+        if (first_num.is_positive_ ^ second_num.is_positive_) {
+            if (first_num.is_positive_) {
+                return first_num + (-second_num);
+            }
+            return -(-first_num + second_num);
+        }
+        if (first < second && first.is_positive_ && second.is_positive_) {
             big_num::swap(first, second);
             result.is_positive_ = false;
         }

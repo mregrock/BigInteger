@@ -20,7 +20,10 @@ int main() {
     std::string c_binary = c_5.ToBinaryString();
     clock_t t3 = clock();
     std::cout << c_5 + c << "\n";
-
+    std::cout << (c + c_5) - c << "\n";
+    std::cout << -(c_5) - c << "\n";
+    std::cout << -(c + c_5) + c_5 << "\n";
+    std::cout << (c - c_5) / c << "\n";
     std::cout << (18446744073709551616_bi) - (1_bi) << "\n";
     clock_t t4 = clock();
     std::cout << (-1_bi < 0_bi) << "\n";
