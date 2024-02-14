@@ -19,6 +19,7 @@ namespace big_num {
     class BigInteger {
         int precision_ = 100;
         int base_ = 0;
+        bool is_positive_ = true;
         std::vector<chunk_t> integral_;
         std::vector<chunk_t> fraction_;
         std::size_t integral_size_;
@@ -33,14 +34,23 @@ namespace big_num {
 
         BigInteger(const BigInteger &);
 
+        BigInteger operator+() const;
+
+        BigInteger operator-() const;
+
+        BigInteger &operator=(const BigInteger &);
+
         friend BigInteger operator+(const BigInteger &, const BigInteger &);
 
         BigInteger operator+=(const BigInteger &);
 
-        BigInteger &operator=(const BigInteger &);
+        friend BigInteger operator-(const BigInteger &, const BigInteger &);
+
+        BigInteger operator-=(const BigInteger &);
 
         friend BigInteger operator*(const BigInteger &, const BigInteger &);
 
+        friend BigInteger KaratsubaMultiplication(const BigInteger &, const BigInteger &);
         BigInteger operator*=(const BigInteger &);
 
         friend BigInteger operator/(const BigInteger &, const BigInteger &);
@@ -71,6 +81,8 @@ namespace big_num {
 
         [[nodiscard]] static BigInteger CreateFromBinary(std::string &);
 
+        BigInteger Abs() const;
+
         [[nodiscard]] const std::vector<chunk_t> &GetIntegral() const;
 
         [[nodiscard]] chunk_t GetChunk(const int &) const;
@@ -91,6 +103,7 @@ namespace big_num {
 
     };
 
+    void swap(BigInteger &, BigInteger &);
 }
 
 big_num::BigInteger operator ""_bi(const char *);
