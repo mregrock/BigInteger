@@ -95,7 +95,7 @@ namespace big_num {
         return this->integral_;
     }
 
-    bool IsPositive() const {
+    bool BigInteger::IsPositive() const {
         return this->is_positive_;
     }
 
@@ -182,7 +182,7 @@ namespace big_num {
         return result;
     }
 
-    BigInteger BigInteger::CreateFromBinary(std::string &bin_str) {
+    BigInteger BigInteger::CreateFromBinary(const std::string &bin_str) {
         BigInteger result;
         result.AddChunk(0);
         int bin_str_size = static_cast<int>(bin_str.size());

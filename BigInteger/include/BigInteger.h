@@ -79,7 +79,7 @@ namespace big_num {
 
         [[nodiscard]] std::string ToBinaryString() const;
 
-        [[nodiscard]] static BigInteger CreateFromBinary(std::string &);
+        [[nodiscard]] static BigInteger CreateFromBinary(const std::string &);
 
         BigInteger Abs() const;
 

@@ -4,4 +4,3 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(BigInteger)
 enable_testing()
 add_subdirectory(tests)
-
