@@ -42,4 +42,46 @@ namespace big_num {
         this->integral_size_ = this->integral_.size();
         this->fraction_size_ = this->fraction_.size();
     }
+
+    BigInteger::BigInteger() {
+        this->integral_size_ = 0;
+        this->fraction_size_ = 0;
+        this->is_positive_ = true;
+    }
+
+    BigInteger::BigInteger(const BigInteger &other) {
+        this->integral_ = other.GetIntegral();
+        this->integral_size_ = other.GetSizeInChunks();
+        this->is_positive_ = other.is_positive_;
+    }
+
+    BigInteger::~BigInteger() {
+        this->integral_.clear();
+        this->fraction_.clear();
+    }
+
+
+    BigInteger BigInteger::CreateFromBinary(const std::string &bin_str) {
+        BigInteger result;
+        result.AddChunk(0);
+        int bin_str_size = static_cast<int>(bin_str.size());
+        int count_bit = 0;
+        int num_chunk = 0;
+        int last_index = 0;
+        if (bin_str[0] == '-') {
+            result.is_positive_ = false;
+            last_index = 1;
+        }
+        for (int i = bin_str_size - 1; i >= last_index; i--) {
+            result.integral_[num_chunk] += (static_cast<long long>(bin_str[i] - '0') << count_bit);
+            count_bit++;
+            if (count_bit == 32) {
+                count_bit = 0;
+                num_chunk++;
+                result.AddChunk(0);
+            }
+        }
+        result.TrimLeadingZeroes();
+        return result;
+    }
 }

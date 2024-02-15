@@ -15,13 +15,23 @@
 typedef unsigned long long chunk_t;
 #define MAX_CHUNK (1ull << CHUNK_SIZE)
 
+namespace str_ops {
+    std::string MultByTwo(const std::string &str_num);
+
+    std::string Inc(const std::string &str_num);
+
+    std::string operator>>(std::string str_num, int shift);
+
+    std::string operator<<(std::string str_num, int shift);
+}
+
 namespace big_num {
     class BigInteger {
         int precision_ = 100;
         int base_ = 0;
         bool is_positive_ = true;
-        std::vector<chunk_t> integral_;
-        std::vector<chunk_t> fraction_;
+        std::vector <chunk_t> integral_;
+        std::vector <chunk_t> fraction_;
         std::size_t integral_size_;
         std::size_t fraction_size_;
 
@@ -51,6 +61,7 @@ namespace big_num {
         friend BigInteger operator*(const BigInteger &, const BigInteger &);
 
         friend BigInteger KaratsubaMultiplication(const BigInteger &, const BigInteger &);
+
         BigInteger operator*=(const BigInteger &);
 
         friend BigInteger operator/(const BigInteger &, const BigInteger &);
@@ -83,16 +94,17 @@ namespace big_num {
 
         BigInteger Abs() const;
 
-        [[nodiscard]] const std::vector<chunk_t> &GetIntegral() const;
+        [[nodiscard]] const std::vector <chunk_t> &GetIntegral() const;
 
         [[nodiscard]] chunk_t GetChunk(const int &) const;
 
         [[nodiscard]] bool IsPositive() const;
+
         void SetChunk(const int &, const chunk_t &);
 
         void SetSizeInChunks(const std::size_t &);
 
-        [[nodiscard]] BigInteger pow(const BigInteger &, const int &times) const;
+        [[nodiscard]] BigInteger Pow(const BigInteger &, const int &times) const;
 
         [[nodiscard]] std::size_t GetSizeInChunks() const;
 
@@ -104,7 +116,7 @@ namespace big_num {
 
     };
 
-    void swap(BigInteger &, BigInteger &);
+    void Swap(BigInteger &, BigInteger &);
 }
 
 big_num::BigInteger operator ""_bi(const char *);

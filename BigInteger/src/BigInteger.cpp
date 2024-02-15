@@ -4,193 +4,7 @@
 
 #include "../include/BigInteger.h"
 
-namespace str_ops {
-    std::string MultByTwo(const std::string &str_num) {
-        std::string result;
-        int str_size = static_cast<int>(str_num.size());
-        int remainder = 0;
-        for (int i = str_size - 1; i >= 0; i--) {
-            int digit_result = ((str_num[i] - '0') * 2);
-            result.push_back(static_cast<char>(digit_result % 10 + remainder + '0'));
-            remainder = digit_result / 10;
-        }
-        if (remainder != 0) {
-            result.push_back('1');
-        }
-        std::reverse(result.begin(), result.end());
-        return result;
-    }
-
-    std::string Inc(const std::string &str_num) {
-        std::string result;
-        int str_size = static_cast<int>(str_num.size());
-        int remainder = 1;
-        for (int i = str_size - 1; i >= 0; i--) {
-            int digit_result = ((str_num[i] - '0') + remainder);
-            result.push_back(static_cast<char>(digit_result % 10 + '0'));
-            remainder = digit_result / 10;
-        }
-        if (remainder != 0) {
-            result.push_back('1');
-        }
-        std::reverse(result.begin(), result.end());
-        return result;
-    }
-
-    std::string operator>>(std::string str_num, int shift) {
-        int shift_with_size = (shift < str_num.size() ? shift : static_cast<int>(str_num.size()));
-        str_num.erase(str_num.end() - shift_with_size, str_num.end());
-        if (str_num.empty()) {
-            str_num.push_back('0');
-        }
-        return str_num;
-    }
-
-    std::string operator<<(std::string str_num, int shift) {
-        for (int i = 0; i < shift; i++) {
-            str_num.push_back('0');
-        }
-        return str_num;
-    }
-
-}
-
 namespace big_num {
-    BigInteger::BigInteger() {
-        this->integral_size_ = 0;
-        this->fraction_size_ = 0;
-        this->is_positive_ = true;
-    }
-
-    BigInteger::~BigInteger() {
-        this->integral_.clear();
-        this->fraction_.clear();
-    }
-
-    chunk_t BigInteger::GetChunk(const int &i) const {
-        if (i >= this->integral_size_) {
-            return 0;
-        }
-        return this->integral_[i];
-    }
-
-
-    void BigInteger::AddChunk(const chunk_t &num) {
-        this->integral_.push_back(num);
-        this->integral_size_++;
-    }
-
-    void BigInteger::PopChunk() {
-        this->integral_.pop_back();
-        this->integral_size_--;
-    }
-
-    void BigInteger::TrimLeadingZeroes() {
-        while (*this->integral_.rbegin() == 0 && this->integral_size_ > 1) {
-            this->PopChunk();
-        }
-    }
-
-    const std::vector <chunk_t> &BigInteger::GetIntegral() const {
-        return this->integral_;
-    }
-
-    bool BigInteger::IsPositive() const {
-        return this->is_positive_;
-    }
-
-    std::string BigInteger::ToString() const {
-        std::string result = "0";
-        int integral_size = static_cast<int>(this->integral_size_);
-        bool not_zero = false;
-        for (int i = integral_size - 1; i >= 0; i--) {
-            for (int j = CHUNK_SIZE - 1; j >= 0; j--) {
-                if (!not_zero) {
-                    if (((1ull << j) & this->integral_[i])) {
-                        not_zero = true;
-                    }
-                }
-                if (not_zero) {
-                    result = str_ops::MultByTwo(result);
-                    if (((1ull << j) & this->integral_[i])) {
-                        result = str_ops::Inc(result);
-                    }
-                }
-            }
-        }
-        if (!this->is_positive_ && result != "0") {
-            result = "-" + result;
-        }
-        return result;
-    }
-
-    std::string BigInteger::ToBinaryString() const {
-        std::string result;
-        int integral_size = static_cast<int>(this->integral_size_);
-        bool not_zero = false;
-        for (int i = integral_size - 1; i >= 0; i--) {
-            for (int j = CHUNK_SIZE - 1; j >= 0; j--) {
-                if (!not_zero) {
-                    if (((1ull << j) & this->integral_[i])) {
-                        not_zero = true;
-                    }
-                }
-                if (not_zero) {
-                    result.push_back(static_cast<char>((((1ull << j) & this->integral_[i]) >> j) + '0'));
-                }
-            }
-        }
-        return result;
-    }
-
-    BigInteger BigInteger::CreateFromBinary(const std::string &bin_str) {
-        BigInteger result;
-        result.AddChunk(0);
-        int bin_str_size = static_cast<int>(bin_str.size());
-        int count_bit = 0;
-        int num_chunk = 0;
-        int last_index = 0;
-        if (bin_str[0] == '-') {
-            result.is_positive_ = false;
-            last_index = 1;
-        }
-        for (int i = bin_str_size - 1; i >= last_index; i--) {
-            result.integral_[num_chunk] += (static_cast<long long>(bin_str[i] - '0') << count_bit);
-            count_bit++;
-            if (count_bit == 32) {
-                count_bit = 0;
-                num_chunk++;
-                result.AddChunk(0);
-            }
-        }
-        result.TrimLeadingZeroes();
-        return result;
-    }
-
-    void swap(BigInteger &first, BigInteger &second) {
-        BigInteger third = first;
-        first = second;
-        second = third;
-    }
-
-    BigInteger BigInteger::Abs() const {
-        BigInteger result = *this;
-        result.is_positive_ = true;
-        return result;
-    }
-
-    void BigInteger::SetSizeInChunks(const std::size_t &size) {
-        this->integral_.assign(size, 0);
-        this->integral_size_ = size;
-    }
-
-    void BigInteger::SetChunk(const int &index, const chunk_t &num) {
-        while (this->integral_size_ <= index) {
-            this->AddChunk(0);
-        }
-        this->integral_[index] = num;
-    }
-
     BigInteger &BigInteger::operator=(const BigInteger &other) {
         this->integral_ = other.integral_;
         this->integral_size_ = other.integral_size_;
@@ -243,7 +57,7 @@ namespace big_num {
             return -(-first_num + second_num);
         }
         if (first < second && first.is_positive_ && second.is_positive_) {
-            big_num::swap(first, second);
+            big_num::Swap(first, second);
             result.is_positive_ = false;
         }
         if (!first.is_positive_ && !second.is_positive_) {
@@ -426,23 +240,12 @@ namespace big_num {
     }
 
 
-    BigInteger BigInteger::pow(const BigInteger &num, const int &times) const {
+    BigInteger BigInteger::Pow(const BigInteger &num, const int &times) const {
         BigInteger result = 1_bi;
         for (int i = 0; i < times; i++) {
             result *= num;
         }
         return result;
-    }
-
-
-    BigInteger::BigInteger(const BigInteger &other) {
-        this->integral_ = other.GetIntegral();
-        this->integral_size_ = other.GetSizeInChunks();
-        this->is_positive_ = other.is_positive_;
-    }
-
-    std::size_t BigInteger::GetSizeInChunks() const {
-        return this->integral_size_;
     }
 
     std::istream &operator>>(std::istream &in, BigInteger &num) {
