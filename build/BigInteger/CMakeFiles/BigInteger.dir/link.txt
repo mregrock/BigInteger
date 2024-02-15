@@ -1,1 +1,0 @@
-/usr/bin/clang++ -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -dynamiclib -Wl,-headerpad_max_install_names -o libBigInteger.dylib -install_name @rpath/libBigInteger.dylib CMakeFiles/BigInteger.dir/src/BigInteger.cpp.o 
