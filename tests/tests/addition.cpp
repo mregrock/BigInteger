@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "BigInteger.h"
+
 TEST(Addition, SimpleAddition){
     big_num::BigInteger a = 1234567890_bi;
     big_num::BigInteger b = 9876543210_bi;
@@ -35,35 +36,35 @@ TEST(Addition, AdditionWithDifferentSize){
     big_num::BigInteger a = 1234567890_bi;
     big_num::BigInteger b = 12345678901234567890_bi;
     big_num::BigInteger c = a + b;
-    ASSERT_EQ(c.ToString(), "12345678901235802480");
+    ASSERT_EQ(c.ToString(), "12345678902469135780");
 }
 
 TEST(Addition, AdditionWithDifferentSizeAndCarry){
     big_num::BigInteger a = 1234567890_bi;
     big_num::BigInteger b = 12345678901234567890_bi;
     big_num::BigInteger c = b + a;
-    ASSERT_EQ(c.ToString(), "12345678901235802480");
+    ASSERT_EQ(c.ToString(), "12345678902469135780");
 }
 
 TEST(Addition, AdditionWithDifferentSizeAndNegative){
     big_num::BigInteger a = 1234567890_bi;
     big_num::BigInteger b = -12345678901234567890_bi;
     big_num::BigInteger c = a + b;
-    ASSERT_EQ(c.ToString(), "-12345678901233333300");
+    ASSERT_EQ(c.ToString(), "-12345678900000000000");
 }
 
 TEST(Addition, AdditionWithDifferentSizeAndNegativeAndCarry){
     big_num::BigInteger a = 1234567890_bi;
     big_num::BigInteger b = -12345678901234567891_bi;
     big_num::BigInteger c = a + b;
-    ASSERT_EQ(c.ToString(), "-12345678901233333301");
+    ASSERT_EQ(c.ToString(), "-12345678900000000001");
 }
 
 TEST(Addition, AdditionWithDifferentSizeAndNegativeAndCarry2){
     big_num::BigInteger a = 1234567890_bi;
     big_num::BigInteger b = -12345678901234567891_bi;
     big_num::BigInteger c = b + a;
-    ASSERT_EQ(c.ToString(), "-12345678901233333301");
+    ASSERT_EQ(c.ToString(), "-12345678900000000001");
 }
 
 TEST(Addition, NegativeAddition){
@@ -98,33 +99,33 @@ TEST(Addition, NegativeAdditionWithDifferentSize){
     big_num::BigInteger a = -1234567890_bi;
     big_num::BigInteger b = 12345678901234567890_bi;
     big_num::BigInteger c = a + b;
-    ASSERT_EQ(c.ToString(), "12345678901233333300");
+    ASSERT_EQ(c.ToString(), "12345678900000000000");
 }
 
 TEST(Addition, NegativeAdditionWithDifferentSizeAndCarry){
     big_num::BigInteger a = -1234567890_bi;
     big_num::BigInteger b = 12345678901234567890_bi;
     big_num::BigInteger c = b + a;
-    ASSERT_EQ(c.ToString(), "12345678901233333300");
+    ASSERT_EQ(c.ToString(), "12345678900000000000");
 }
 
 TEST(Addition, NegativeAdditionWithDifferentSizeAndNegative){
     big_num::BigInteger a = -1234567890_bi;
     big_num::BigInteger b = -12345678901234567890_bi;
     big_num::BigInteger c = a + b;
-    ASSERT_EQ(c.ToString(), "-12345678901235802480");
+    ASSERT_EQ(c.ToString(), "-12345678902469135780");
 }
 
 TEST(Addition, NegativeAdditionWithDifferentSizeAndNegativeAndCarry){
     big_num::BigInteger a = -1234567890_bi;
     big_num::BigInteger b = -12345678901234567891_bi;
     big_num::BigInteger c = a + b;
-    ASSERT_EQ(c.ToString(), "-12345678901235802481");
+    ASSERT_EQ(c.ToString(), "-12345678902469135781");
 }
 
 TEST(Addition, NegativeAdditionWithDifferentSizeAndNegativeAndCarry2){
     big_num::BigInteger a = -1234567890_bi;
     big_num::BigInteger b = -12345678901234567891_bi;
     big_num::BigInteger c = b + a;
-    ASSERT_EQ(c.ToString(), "-12345678901235802481");
+    ASSERT_EQ(c.ToString(), "-12345678902469135781");
 }

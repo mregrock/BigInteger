@@ -285,6 +285,9 @@ namespace big_num {
             big_num::swap(first, second);
             result.is_positive_ = false;
         }
+        if (!first.is_positive_ && !second.is_positive_) {
+            return (-second - (-first));
+        }
         std::size_t new_size = (first.integral_size_ > second.integral_size_ ? first.integral_size_
                                                                              : second.integral_size_);
         chunk_t remainder = 0;
