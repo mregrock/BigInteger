@@ -2,7 +2,7 @@
 // Created by Егор Кулин on 27.01.2024.
 //
 
-#include "BigInteger.h"
+#include "../include/BigInteger.h"
 
 namespace str_ops {
     std::string MultByTwo(const std::string &str_num) {
@@ -91,8 +91,12 @@ namespace big_num {
         }
     }
 
-    const std::vector<chunk_t> &BigInteger::GetIntegral() const {
+    const std::vector <chunk_t> &BigInteger::GetIntegral() const {
         return this->integral_;
+    }
+
+    bool IsPositive() const {
+        return this->is_positive_;
     }
 
     BigInteger::BigInteger(std::string str_num) {

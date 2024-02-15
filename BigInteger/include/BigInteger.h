@@ -87,6 +87,7 @@ namespace big_num {
 
         [[nodiscard]] chunk_t GetChunk(const int &) const;
 
+        [[nodiscard]] bool IsPositive() const;
         void SetChunk(const int &, const chunk_t &);
 
         void SetSizeInChunks(const std::size_t &);
