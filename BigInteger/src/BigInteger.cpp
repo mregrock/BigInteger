@@ -188,7 +188,12 @@ namespace big_num {
         int bin_str_size = static_cast<int>(bin_str.size());
         int count_bit = 0;
         int num_chunk = 0;
-        for (int i = bin_str_size - 1; i >= 0; i--) {
+        int last_index = 0;
+        if (bin_str[0] == '-'){
+            result.is_positive_ = false;
+            last_index = 1;
+        }
+        for (int i = bin_str_size - 1; i >= last_index; i--) {
             result.integral_[num_chunk] += (static_cast<long long>(bin_str[i] - '0') << count_bit);
             count_bit++;
             if (count_bit == 32) {

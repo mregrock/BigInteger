@@ -47,3 +47,15 @@ TEST(Creation, CreateFromBinary) {
     ASSERT_EQ(a.IsPositive(), true);
     ASSERT_EQ(a.ToString(), "100");
 }
+
+TEST(Creation, CreateFromNegativeBinary) {
+    big_num::BigInteger a = big_num::BigInteger::CreateFromBinary("-1100100");
+    ASSERT_EQ(a.IsPositive(), false);
+    ASSERT_EQ(a.ToString(), "-100");
+}
+
+TEST(Creation, CreateFromBinaryWithLeadingZeroes) {
+    big_num::BigInteger a = big_num::BigInteger::CreateFromBinary("-00001100100");
+    ASSERT_EQ(a.IsPositive(), false);
+    ASSERT_EQ(a.ToString(), "-100");
+}
