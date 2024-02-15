@@ -153,7 +153,7 @@ namespace big_num {
                 }
             }
         }
-        if (!this->is_positive_) {
+        if (!this->is_positive_ && result != "0") {
             result = "-" + result;
         }
         return result;
@@ -231,9 +231,9 @@ namespace big_num {
     BigInteger operator+(const BigInteger &first, const BigInteger &second) {
         if (first.is_positive_ ^ second.is_positive_) {
             if (first.is_positive_) {
-                return first - second;
+                return first - second.Abs();
             }
-            return second - first;
+            return second - first.Abs();
         }
         std::size_t new_size = (first.integral_size_ > second.integral_size_ ? first.integral_size_
                                                                              : second.integral_size_);
@@ -344,8 +344,6 @@ namespace big_num {
         BigInteger z1 = KaratsubaMultiplication(first_high, second_high);
         BigInteger z2 = KaratsubaMultiplication(first_low + first_high, second_low + second_high);
         return z1 * (1_bi << (2 * m)) + (z2 - z1 - z0) * (1_bi << m) + z0;
-
-
     }
 
 
@@ -435,11 +433,11 @@ namespace big_num {
     }
 
     bool operator>(const BigInteger &left_num, const BigInteger &right_num) {
-        return !(left_num < right_num);
+        return !(left_num <= right_num);
     }
 
     bool operator>=(const BigInteger &left_num, const BigInteger &right_num) {
-        return ((left_num > right_num) || (left_num == right_num));
+        return !(left_num < right_num);
     }
 
     BigInteger operator>>(const BigInteger &num, int shift) {

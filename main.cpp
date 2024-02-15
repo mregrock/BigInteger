@@ -28,7 +28,7 @@ int main() {
     clock_t t4 = clock();
     std::cout << (-1_bi < 0_bi) << "\n";
     std::cout << 1000.0 * (t2 - t1) / CLOCKS_PER_SEC << "\n";
-    std::cout << 1000.0 * (t3 - t1) / CLOCKS_PER_SEC << "\n";
+    //std::cout << 1000.0 * (t3 - t1) / CLOCKS_PER_SEC << "\n";
     std::cout << 1000.0 * (t4 - t1) / CLOCKS_PER_SEC;;
     return 0;
 }
