@@ -7,6 +7,10 @@ namespace big_num {
     BigInteger::BigInteger(std::string str_num) {
         int index = static_cast<int>(str_num.find('.'));
         std::string next_str;
+        this->exp_ = (index == -1 ? 0 : static_cast<int>(str_num.size()) - index - 1);
+        if (index != -1) {
+            str_num.erase(str_num.begin() + index);
+        }
         int count_bit = 0;
         int chunk_num = 0;
         this->AddChunk(0);
@@ -46,6 +50,7 @@ namespace big_num {
     BigInteger::BigInteger() {
         this->integral_size_ = 0;
         this->fraction_size_ = 0;
+        this->exp_ = 0;
         this->is_positive_ = true;
     }
 
@@ -53,6 +58,7 @@ namespace big_num {
         this->integral_ = other.GetIntegral();
         this->integral_size_ = other.GetSizeInChunks();
         this->is_positive_ = other.is_positive_;
+        this->exp_ = other.exp_;
     }
 
     BigInteger::~BigInteger() {

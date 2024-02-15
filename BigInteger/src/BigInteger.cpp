@@ -9,6 +9,7 @@ namespace big_num {
         this->integral_ = other.integral_;
         this->integral_size_ = other.integral_size_;
         this->is_positive_ = other.is_positive_;
+        this->exp_ = other.exp_;
         return *this;
     }
 

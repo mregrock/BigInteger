@@ -46,6 +46,10 @@ namespace big_num {
         if (!this->is_positive_ && result != "0") {
             result = "-" + result;
         }
+        if (this->exp_ == 0) {
+            return result;
+        }
+        result.insert(result.begin() + result.size() - this->exp_, '.');
         return result;
     }
 }

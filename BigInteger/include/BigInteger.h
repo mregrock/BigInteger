@@ -9,9 +9,9 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <bitset>
 
 #define CHUNK_SIZE 32
+#define PRECISION 256
 typedef unsigned long long chunk_t;
 #define MAX_CHUNK (1ull << CHUNK_SIZE)
 
@@ -20,6 +20,10 @@ namespace str_ops {
 
     std::string Inc(const std::string &str_num);
 
+    [[nodiscard]] static std::vector <chunk_t> StringToNumeric(std::string);
+
+    [[nodiscard]] static std::string NumericToString(const std::vector <chunk_t> &);
+
     std::string operator>>(std::string str_num, int shift);
 
     std::string operator<<(std::string str_num, int shift);
@@ -27,8 +31,8 @@ namespace str_ops {
 
 namespace big_num {
     class BigInteger {
-        int precision_ = 100;
-        int base_ = 0;
+        int precision_ = 256;
+        int exp_;
         bool is_positive_ = true;
         std::vector <chunk_t> integral_;
         std::vector <chunk_t> fraction_;
@@ -111,6 +115,8 @@ namespace big_num {
         void PopChunk();
 
         void TrimLeadingZeroes();
+
+        void TrimFunc();
 
         void AddChunk(const chunk_t &);
 
