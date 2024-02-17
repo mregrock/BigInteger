@@ -24,3 +24,18 @@ TEST(Multiplication, MultiplicationWithNegative){
     big_num::BigInteger c = a * b;
     ASSERT_EQ(c.ToString(), "-1524157875019052100");
 }
+
+TEST(Multiplication, BigMultiplication){
+    big_num::BigInteger a = 97804128401274950875667849124005901093812739000_bi;
+    big_num::BigInteger b = 899400498400498127480040128476789008_bi;
+    big_num::BigInteger c = a * b;
+    ASSERT_EQ(c.ToString(), "87965081829733004937029228185750150787294692442594161013397502806255682765572912000");
+}
+
+TEST(Multiplication, FractionalMultiplication){
+    big_num::BigInteger a = 12345673213.1233_bi;
+    big_num::BigInteger b = 9873456789570.4546_bi;
+    big_num::BigInteger c = a * b;
+    std::string res = "121894471007930336353606.66685218";
+    ASSERT_TRUE((c - big_num::BigInteger(res)).Abs() < 0.00000000001_bi);
+}

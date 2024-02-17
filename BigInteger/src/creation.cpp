@@ -7,12 +7,13 @@ namespace big_num {
     BigInteger::BigInteger(std::string str_num) {
         int index = static_cast<int>(str_num.find('.'));
         std::string next_str;
-        this->exp_ = (index == -1 ? 0 : static_cast<int>(str_num.size()) - index - 1);
-        if (index != -1) {
-            str_num.erase(str_num.begin() + index);
-        }
         int count_bit = 0;
-        int chunk_num = 0;
+        std::string fraction_str = str_num.substr(index + 1);
+        str_num = str_num.substr(0, index);
+        int chunk_num = precision_;
+        for (int i = 0; i < precision_; i++) {
+            this->AddChunk(0);
+        }
         this->AddChunk(0);
         if (str_num[0] == '-') {
             this->is_positive_ = false;
@@ -43,6 +44,22 @@ namespace big_num {
             str_num = next_str;
         }
         this->integral_[chunk_num] += ((std::stoll(str_num)) << count_bit);
+        if (index != -1) {
+            for (chunk_num = this->precision_ - 1; chunk_num >= 0; chunk_num--) {
+                for (int num_bit = CHUNK_SIZE - 1; num_bit >= 0; num_bit--) {
+                    next_str = str_ops::MultByTwo(fraction_str);
+                    if (next_str.size() != fraction_str.size()) {
+                        next_str.erase(next_str.begin());
+                        fraction_str = next_str;
+                        //std::cout << "1";
+                        this->integral_[chunk_num] += (1ull << num_bit);
+                    } else {
+                        //std::cout << "0";
+                    }
+                    fraction_str = next_str;
+                }
+            }
+        }
         this->integral_size_ = this->integral_.size();
         this->fraction_size_ = this->fraction_.size();
     }

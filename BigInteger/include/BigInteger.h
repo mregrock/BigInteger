@@ -11,7 +11,7 @@
 #include <vector>
 
 #define CHUNK_SIZE 32
-#define PRECISION 256
+#define PRECISION 512
 typedef unsigned long long chunk_t;
 #define MAX_CHUNK (1ull << CHUNK_SIZE)
 
@@ -31,7 +31,7 @@ namespace str_ops {
 
 namespace big_num {
     class BigInteger {
-        int precision_ = 256;
+        int precision_ = PRECISION / CHUNK_SIZE;
         int exp_;
         bool is_positive_ = true;
         std::vector <chunk_t> integral_;
@@ -89,6 +89,10 @@ namespace big_num {
         friend std::ostream &operator<<(std::ostream &, const BigInteger &);
 
         friend std::istream &operator>>(std::istream &, BigInteger &);
+
+        [[nodiscard]] std::string ToStringIntegral() const;
+
+        [[nodiscard]] std::string ToStringFractional() const;
 
         [[nodiscard]] std::string ToString() const;
 

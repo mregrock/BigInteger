@@ -46,7 +46,7 @@ namespace big_num {
     }
 
     void BigInteger::TrimLeadingZeroes() {
-        while (*this->integral_.rbegin() == 0 && this->integral_size_ > 1) {
+        while (*this->integral_.rbegin() == 0 && this->integral_size_ > this->precision_) {
             this->PopChunk();
         }
     }
