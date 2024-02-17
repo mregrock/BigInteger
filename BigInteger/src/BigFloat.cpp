@@ -9,6 +9,7 @@ namespace big_num {
         this->integral_ = other.integral_;
         this->integral_size_ = other.integral_size_;
         this->is_positive_ = other.is_positive_;
+        this->exp_ = other.exp_;
         return *this;
     }
 
@@ -69,7 +70,7 @@ namespace big_num {
         for (int i = 0; i < new_size; i++) {
             chunk_t chunk_res;
             if (first.GetChunk(i) < second.GetChunk(i) + remainder) {
-                chunk_res = first.GetChunk(i) + ((1ull << 32) - second.GetChunk(i) - remainder);
+                chunk_res = first.GetChunk(i) + ((1ull << CHUNK_SIZE) - second.GetChunk(i) - remainder);
                 remainder = 1;
             } else {
                 chunk_res = first.GetChunk(i) - second.GetChunk(i) - remainder;
@@ -106,6 +107,12 @@ namespace big_num {
         if (first.is_positive_ ^ second.is_positive_) {
             res.is_positive_ = false;
         }
+        int cnt_last = 0;
+        while (cnt_last != res.precision_) {
+            res.integral_.erase(res.integral_.begin());
+            res.integral_size_--;
+            cnt_last++;
+        }
         return res;
     }
 
@@ -141,13 +148,14 @@ namespace big_num {
     BigInteger operator/(const BigInteger &left_num, const BigInteger &right_num) {
         BigInteger res;
         BigInteger mult = 0_bi;
-        int left_num_size = static_cast<int>(left_num.integral_size_);
         std::string bin_res;
-        for (int i = 1; i >= 0; i--) {
+        BigInteger left_num_new = left_num << PRECISION;
+        int left_num_size = static_cast<int>(left_num_new.integral_size_);
+        for (int i = left_num_size - 1; i >= 0; i--) {
             for (int bit = CHUNK_SIZE - 1; bit >= 0; bit--) {
-                int shift = (CHUNK_SIZE) * (i) + bit;
+                int shift = (CHUNK_SIZE) * (i - left_num.precision_) + bit;
                 BigInteger add = (right_num << (shift));
-                if (mult + add <= left_num) {
+                if (mult + add <= left_num_new) {
                     mult = mult + add;
                     bin_res.push_back('1');
                 } else {
@@ -155,6 +163,22 @@ namespace big_num {
                 }
             }
         }
+        /*for (int i = left_num.precision_ - 1; i >= 0; i--){
+            for (int bit = CHUNK_SIZE - 1; bit >= 0; bit--){
+                int shift = (CHUNK_SIZE) * (i - left_num.precision_) + bit;
+                shift = -shift;
+                BigInteger add = (right_num >> (shift));
+                if (mult + add <= left_num){
+                    mult = mult + add;
+                    bin_res.push_back('1');
+                }
+                else{
+                    bin_res.push_back('0');
+                }
+            }
+        }*/
+        bin_res = str_ops::operator>>(bin_res, PRECISION);
+        std::cout << bin_res << std::endl;
         res = BigInteger::CreateFromBinary(bin_res);
         if (left_num.is_positive_ ^ right_num.is_positive_) {
             res.is_positive_ = false;
