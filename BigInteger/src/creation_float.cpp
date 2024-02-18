@@ -1,10 +1,10 @@
 //
 // Created by Егор Кулин on 15.02.2024.
 //
-#include "BigInteger.h"
+#include "BigFloat.h"
 
 namespace big_num {
-    BigInteger::BigInteger(std::string str_num) {
+    BigFloat::BigFloat(std::string str_num) {
         int index = static_cast<int>(str_num.find('.'));
         std::string next_str;
         int count_bit = 0;
@@ -64,28 +64,28 @@ namespace big_num {
         this->fraction_size_ = this->fraction_.size();
     }
 
-    BigInteger::BigInteger() {
+    BigFloat::BigFloat() {
         this->integral_size_ = 0;
         this->fraction_size_ = 0;
         this->exp_ = 0;
         this->is_positive_ = true;
     }
 
-    BigInteger::BigInteger(const BigInteger &other) {
+    BigFloat::BigFloat(const BigFloat &other) {
         this->integral_ = other.GetIntegral();
         this->integral_size_ = other.GetSizeInChunks();
         this->is_positive_ = other.is_positive_;
         this->exp_ = other.exp_;
     }
 
-    BigInteger::~BigInteger() {
+    BigFloat::~BigFloat() {
         this->integral_.clear();
         this->fraction_.clear();
     }
 
 
-    BigInteger BigInteger::CreateFromBinary(const std::string &bin_str) {
-        BigInteger result;
+    BigFloat BigFloat::CreateFromBinary(const std::string &bin_str) {
+        BigFloat result;
         result.AddChunk(0);
         int bin_str_size = static_cast<int>(bin_str.size());
         int count_bit = 0;

@@ -2,10 +2,10 @@
 // Created by Егор Кулин on 15.02.2024.
 //
 
+#include "BigFloat.h"
 #include "BigInteger.h"
-
 namespace big_num {
-    std::string BigInteger::ToBinaryString() const {
+    std::string BigFloat::ToBinaryString() const {
         std::string result;
         int integral_size = static_cast<int>(this->integral_size_);
         bool not_zero = false;
@@ -24,7 +24,7 @@ namespace big_num {
         return result;
     }
 
-    std::string BigInteger::ToString() const {;
+    std::string BigFloat::ToString() const {;
         std::string result;
         std::string integral_part = this->ToStringIntegral();
         std::string fraction_part = this->ToStringFractional();
@@ -38,7 +38,7 @@ namespace big_num {
         return result;
     }
 
-    std::string BigInteger::ToStringIntegral() const {
+    std::string BigFloat::ToStringIntegral() const {
         std::string result = "0";
         int integral_size = static_cast<int>(this->integral_size_);
         bool not_zero = false;
@@ -63,7 +63,7 @@ namespace big_num {
         return result;
     }
 
-    std::string BigInteger::ToStringFractional() const {
+    std::string BigFloat::ToStringFractional() const {
         bool is_null = true;
         for (int i = 0; i < this->precision_; i++) {
             if (this->integral_[i] != 0) {
@@ -88,7 +88,7 @@ namespace big_num {
                 five_power *= 5_bi;
             }
         }
-        std::string second_res = fraction.ToStringIntegral();
+        std::string second_res = fraction.ToString();
         second_res.erase(second_res.begin());
         while (*second_res.rbegin() == '0'){
             second_res.pop_back();

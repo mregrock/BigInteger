@@ -107,7 +107,7 @@ namespace big_num {
 
         void SetSizeInChunks(const std::size_t &);
 
-        [[nodiscard]] BigInteger Pow(const BigInteger &, const int &times) const;
+        [[nodiscard]] static BigInteger Pow(const BigInteger &, int times);
 
         [[nodiscard]] std::size_t GetSizeInChunks() const;
 

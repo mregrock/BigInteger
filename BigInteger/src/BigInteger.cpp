@@ -26,7 +26,7 @@ namespace big_num {
         for (int i = 0; i < new_size; i++) {
             chunk_t chunks_sum = first.GetChunk(i) + second.GetChunk(i) + remainder;
             remainder = 0;
-            if (chunks_sum > MAX_CHUNK) {
+            if (chunks_sum >= MAX_CHUNK) {
                 chunks_sum = chunks_sum % MAX_CHUNK;
                 remainder = 1;
             }
@@ -143,7 +143,7 @@ namespace big_num {
         BigInteger mult = 0_bi;
         int left_num_size = static_cast<int>(left_num.integral_size_);
         std::string bin_res;
-        for (int i = 1; i >= 0; i--) {
+        for (int i = left_num_size - 1; i >= 0; i--) {
             for (int bit = CHUNK_SIZE - 1; bit >= 0; bit--) {
                 int shift = (CHUNK_SIZE) * (i) + bit;
                 BigInteger add = (right_num << (shift));
@@ -235,12 +235,13 @@ namespace big_num {
 
     BigInteger operator<<(const BigInteger &num, int shift) {
         std::string bin_num = num.ToBinaryString();
+        BigInteger result;
         std::string shifted_num = str_ops::operator<<(bin_num, shift);
         return BigInteger::CreateFromBinary(shifted_num);
     }
 
 
-    BigInteger BigInteger::Pow(const BigInteger &num, const int &times) const {
+    BigInteger BigInteger::Pow(const BigInteger &num, int times){
         BigInteger result = 1_bi;
         for (int i = 0; i < times; i++) {
             result *= num;

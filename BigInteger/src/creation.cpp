@@ -73,7 +73,7 @@ namespace big_num {
             last_index = 1;
         }
         for (int i = bin_str_size - 1; i >= last_index; i--) {
-            result.integral_[num_chunk] += (static_cast<long long>(bin_str[i] - '0') << count_bit);
+            result.integral_[num_chunk] += (static_cast<unsigned long long>(bin_str[i] - '0') << count_bit);
             count_bit++;
             if (count_bit == 32) {
                 count_bit = 0;

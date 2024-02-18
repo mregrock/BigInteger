@@ -3,6 +3,7 @@
 //
 #include <gtest/gtest.h>
 #include "BigInteger.h"
+#include "BigFloat.h"
 
 TEST(Multiplication, SimpleMultiplication){
     big_num::BigInteger a = 1234567890_bi;
@@ -33,9 +34,17 @@ TEST(Multiplication, BigMultiplication){
 }
 
 TEST(Multiplication, FractionalMultiplication){
-    big_num::BigInteger a = 12345673213.1233_bi;
-    big_num::BigInteger b = 9873456789570.4546_bi;
-    big_num::BigInteger c = a * b;
+    big_num::BigFloat a = 12345673213.1233_bf;
+    big_num::BigFloat b = 9873456789570.4546_bf;
+    big_num::BigFloat c = a * b;
     std::string res = "121894471007930336353606.66685218";
-    ASSERT_TRUE((c - big_num::BigInteger(res)).Abs() < 0.00000000001_bi);
+    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 0.00000000001_bf);
+}
+
+TEST(Multiplication, BigDivide){
+    big_num::BigInteger a = 5_bi;
+    big_num::BigInteger b = 4_bi;
+    a = a * big_num::BigInteger::Pow(2_bi, 1024);
+    b = b * big_num::BigInteger::Pow(2_bi, 512);
+    std::cout << a / b << std::endl;
 }

@@ -2,13 +2,14 @@
 // Created by Егор Кулин on 27.01.2024.
 //
 
-#ifndef BIGINT_BIGINTEGER_H
-#define BIGINT_BIGINTEGER_H
+#ifndef BIGINT_BigFloat_H
+#define BIGINT_BigFloat_H
 
 
 #include <string>
 #include <iostream>
 #include <vector>
+#include "BigInteger.h"
 
 #define CHUNK_SIZE 32
 #define PRECISION 512
@@ -30,7 +31,7 @@ namespace str_ops {
 }
 
 namespace big_num {
-    class BigInteger {
+    class BigFloat {
         int precision_ = PRECISION / CHUNK_SIZE;
         int exp_;
         bool is_positive_ = true;
@@ -40,55 +41,55 @@ namespace big_num {
         std::size_t fraction_size_;
 
     public:
-        BigInteger();
+        BigFloat();
 
-        explicit BigInteger(std::string);
+        explicit BigFloat(std::string);
 
-        ~BigInteger();
+        ~BigFloat();
 
-        BigInteger(const BigInteger &);
+        BigFloat(const BigFloat &);
 
-        BigInteger operator+() const;
+        BigFloat operator+() const;
 
-        BigInteger operator-() const;
+        BigFloat operator-() const;
 
-        BigInteger &operator=(const BigInteger &);
+        BigFloat &operator=(const BigFloat &);
 
-        friend BigInteger operator+(const BigInteger &, const BigInteger &);
+        friend BigFloat operator+(const BigFloat &, const BigFloat &);
 
-        BigInteger operator+=(const BigInteger &);
+        BigFloat operator+=(const BigFloat &);
 
-        friend BigInteger operator-(const BigInteger &, const BigInteger &);
+        friend BigFloat operator-(const BigFloat &, const BigFloat &);
 
-        BigInteger operator-=(const BigInteger &);
+        BigFloat operator-=(const BigFloat &);
 
-        friend BigInteger operator*(const BigInteger &, const BigInteger &);
+        friend BigFloat operator*(const BigFloat &, const BigFloat &);
 
-        friend BigInteger KaratsubaMultiplication(const BigInteger &, const BigInteger &);
+        friend BigFloat KaratsubaMultiplication(const BigFloat &, const BigFloat &);
 
-        BigInteger operator*=(const BigInteger &);
+        BigFloat operator*=(const BigFloat &);
 
-        friend BigInteger operator/(const BigInteger &, const BigInteger &);
+        friend BigFloat operator/(const BigFloat &, const BigFloat &);
 
-        BigInteger operator/=(const BigInteger &);
+        BigFloat operator/=(const BigFloat &);
 
-        friend bool operator==(const BigInteger &, const BigInteger &);
+        friend bool operator==(const BigFloat &, const BigFloat &);
 
-        friend bool operator<(const BigInteger &, const BigInteger &);
+        friend bool operator<(const BigFloat &, const BigFloat &);
 
-        friend bool operator>(const BigInteger &, const BigInteger &);
+        friend bool operator>(const BigFloat &, const BigFloat &);
 
-        friend bool operator<=(const BigInteger &, const BigInteger &);
+        friend bool operator<=(const BigFloat &, const BigFloat &);
 
-        friend bool operator>=(const BigInteger &, const BigInteger &);
+        friend bool operator>=(const BigFloat &, const BigFloat &);
 
-        friend BigInteger operator>>(const BigInteger &, int);
+        friend BigFloat operator>>(const BigFloat &, int);
 
-        friend BigInteger operator<<(const BigInteger &, int);
+        friend BigFloat operator<<(const BigFloat &, int);
 
-        friend std::ostream &operator<<(std::ostream &, const BigInteger &);
+        friend std::ostream &operator<<(std::ostream &, const BigFloat &);
 
-        friend std::istream &operator>>(std::istream &, BigInteger &);
+        friend std::istream &operator>>(std::istream &, BigFloat &);
 
         [[nodiscard]] std::string ToStringIntegral() const;
 
@@ -98,9 +99,9 @@ namespace big_num {
 
         [[nodiscard]] std::string ToBinaryString() const;
 
-        [[nodiscard]] static BigInteger CreateFromBinary(const std::string &);
+        [[nodiscard]] static BigFloat CreateFromBinary(const std::string &);
 
-        BigInteger Abs() const;
+        BigFloat Abs() const;
 
         [[nodiscard]] const std::vector <chunk_t> &GetIntegral() const;
 
@@ -112,7 +113,7 @@ namespace big_num {
 
         void SetSizeInChunks(const std::size_t &);
 
-        [[nodiscard]] BigInteger Pow(const BigInteger &, const int &times) const;
+        [[nodiscard]] BigFloat Pow(const BigFloat &, const int &times) const;
 
         [[nodiscard]] std::size_t GetSizeInChunks() const;
 
@@ -124,12 +125,16 @@ namespace big_num {
 
         void AddChunk(const chunk_t &);
 
+        [[nodiscard]] big_num::BigInteger ToBigInt() const;
+
+        [[nodiscard]] big_num::BigInteger ToBigIntNarrow() const;
+
     };
 
-    void Swap(BigInteger &, BigInteger &);
+    void Swap(BigFloat &, BigFloat &);
 }
 
-big_num::BigInteger operator ""_bi(const char *);
+big_num::BigFloat operator ""_bf(const char *);
 
 
-#endif //BIGINT_BIGINTEGER_H
+#endif //BIGINT_BigFloat_H

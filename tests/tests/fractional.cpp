@@ -3,15 +3,17 @@
 //
 #include <gtest/gtest.h>
 #include "BigInteger.h"
+#include "BigFloat.h"
+
 TEST(Fractional, DivideFractional){
-    big_num::BigInteger a = 2.25_bi;
-    big_num::BigInteger b = 1.5_bi;
-    big_num::BigInteger c = a / b;
+    big_num::BigFloat a = 2.25_bf;
+    big_num::BigFloat b = 1.5_bf;
+    big_num::BigFloat c = a / b;
     ASSERT_EQ(c.ToString(), "1.5");
 }
 TEST(Fractional, CreateFractional){
-    big_num::BigInteger a = 568_bi;
-    big_num::BigInteger b = 541_bi;
-    big_num::BigInteger c = a / b;
+    big_num::BigFloat a = 568_bf;
+    big_num::BigFloat b = 541_bf;
+    big_num::BigFloat c = a / b;
     ASSERT_EQ(c.ToString(), "1.25");
 }

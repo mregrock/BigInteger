@@ -1,67 +1,89 @@
 //
 // Created by Егор Кулин on 15.02.2024.
 //
-#include "BigInteger.h"
+#include "BigFloat.h"
 
 namespace big_num {
-    chunk_t BigInteger::GetChunk(const int &i) const {
+    chunk_t BigFloat::GetChunk(const int &i) const {
         if (i >= this->integral_size_) {
             return 0;
         }
         return this->integral_[i];
     }
 
-    std::size_t BigInteger::GetSizeInChunks() const {
+    std::size_t BigFloat::GetSizeInChunks() const {
         return this->integral_size_;
     }
 
-    void BigInteger::AddChunk(const chunk_t &num) {
+    void BigFloat::AddChunk(const chunk_t &num) {
         this->integral_.push_back(num);
         this->integral_size_++;
     }
 
-    void BigInteger::PopChunk() {
+    void BigFloat::PopChunk() {
         this->integral_.pop_back();
         this->integral_size_--;
     }
 
-    const std::vector <chunk_t> &BigInteger::GetIntegral() const {
+    const std::vector <chunk_t> &BigFloat::GetIntegral() const {
         return this->integral_;
     }
 
-    bool BigInteger::IsPositive() const {
+    bool BigFloat::IsPositive() const {
         return this->is_positive_;
     }
 
-    void Swap(BigInteger &first, BigInteger &second) {
-        BigInteger third = first;
+    void Swap(BigFloat &first, BigFloat &second) {
+        BigFloat third = first;
         first = second;
         second = third;
     }
 
-    BigInteger BigInteger::Abs() const {
-        BigInteger result = *this;
+    BigFloat BigFloat::Abs() const {
+        BigFloat result = *this;
         result.is_positive_ = true;
         return result;
     }
 
-    void BigInteger::TrimLeadingZeroes() {
+    void BigFloat::TrimLeadingZeroes() {
         while (*this->integral_.rbegin() == 0 && this->integral_size_ > this->precision_) {
             this->PopChunk();
         }
     }
 
-    void BigInteger::SetSizeInChunks(const std::size_t &size) {
+    void BigFloat::SetSizeInChunks(const std::size_t &size) {
         this->integral_.assign(size, 0);
         this->integral_size_ = size;
     }
 
-    void BigInteger::SetChunk(const int &index, const chunk_t &num) {
+    void BigFloat::SetChunk(const int &index, const chunk_t &num) {
         while (this->integral_size_ <= index) {
             this->AddChunk(0);
         }
         this->integral_[index] = num;
     }
 
+    BigInteger BigFloat::ToBigInt() const {
+        BigInteger result;
+        for (int i = this->precision_; i < this->integral_size_; i++) {
+            result.AddChunk(this->integral_[i]);
+        }
+        if (!this->is_positive_) {
+            result = -result;
+        }
+        return result;
+    }
+
+    BigInteger BigFloat::ToBigIntNarrow() const {
+        BigInteger result;
+        for (int i = 0; i < this->integral_size_; i++) {
+            result.AddChunk(this->integral_[i]);
+        }
+        if (!this->is_positive_) {
+            result = -result;
+        }
+        result.TrimLeadingZeroes();
+        return result;
+    }
 
 }
