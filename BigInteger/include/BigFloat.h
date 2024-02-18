@@ -45,6 +45,8 @@ namespace big_num {
 
         explicit BigFloat(std::string);
 
+        BigFloat(double);
+
         ~BigFloat();
 
         BigFloat(const BigFloat &);

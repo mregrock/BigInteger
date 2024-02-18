@@ -1,7 +1,6 @@
 //
 // Created by Егор Кулин on 27.01.2024.
 //
-
 #include "../include/BigInteger.h"
 
 namespace big_num {

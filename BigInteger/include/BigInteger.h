@@ -41,6 +41,8 @@ namespace big_num {
 
         explicit BigInteger(std::string);
 
+        BigInteger (long long);
+
         ~BigInteger();
 
         BigInteger(const BigInteger &);

@@ -71,6 +71,11 @@ namespace big_num {
         this->is_positive_ = true;
     }
 
+    BigFloat::BigFloat(double value) {
+        std::string str_value = std::to_string(value);
+        *this = BigFloat(str_value);
+    }
+
     BigFloat::BigFloat(const BigFloat &other) {
         this->integral_ = other.GetIntegral();
         this->integral_size_ = other.GetSizeInChunks();

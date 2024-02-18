@@ -49,6 +49,12 @@ namespace big_num {
         this->is_positive_ = true;
     }
 
+    BigInteger::BigInteger(long long value) {
+        this->integral_.push_back(value);
+        this->integral_size_ = 1;
+        this->is_positive_ = value >= 0;
+
+    }
     BigInteger::BigInteger(const BigInteger &other) {
         this->integral_ = other.GetIntegral();
         this->integral_size_ = other.GetSizeInChunks();

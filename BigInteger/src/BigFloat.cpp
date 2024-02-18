@@ -124,31 +124,11 @@ namespace big_num {
     BigFloat operator/(const BigFloat &left_num, const BigFloat &right_num) {
         BigFloat res;
         std::string bin_res;
-        std::cout << left_num << std::endl;
-        std::cout << right_num << std::endl;
         big_num::BigInteger left_num_new = left_num.ToBigIntNarrow();
         big_num::BigInteger right_num_new = right_num.ToBigIntNarrow();
         left_num_new = left_num_new << (PRECISION);
-        std::cout << left_num_new.ToBinaryString() << std::endl;
-        std::cout << right_num_new.ToBinaryString() << std::endl;
         big_num::BigInteger res_new = left_num_new / right_num_new;
-        std::cout << res_new << std::endl;
         bin_res = res_new.ToBinaryString();
-        /*for (int i = left_num.precision_ - 1; i >= 0; i--){
-            for (int bit = CHUNK_SIZE - 1; bit >= 0; bit--){
-                int shift = (CHUNK_SIZE) * (i - left_num.precision_) + bit;
-                shift = -shift;
-                BigFloat add = (right_num >> (shift));
-                if (mult + add <= left_num){
-                    mult = mult + add;
-                    bin_res.push_back('1');
-                }
-                else{
-                    bin_res.push_back('0');
-                }
-            }
-        }*/
-        std::cout << bin_res << std::endl;
         res = BigFloat::CreateFromBinary(bin_res);
         if (left_num.is_positive_ ^ right_num.is_positive_) {
             res.is_positive_ = false;
