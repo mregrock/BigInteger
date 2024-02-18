@@ -129,3 +129,11 @@ TEST(Addition, NegativeAdditionWithDifferentSizeAndNegativeAndCarry2){
     big_num::BigInteger c = b + a;
     ASSERT_EQ(c.ToString(), "-12345678902469135781");
 }
+
+TEST(Addition, FractionalAddition){
+    big_num::BigInteger a = 1234567543532632131233645364575685346778901231245000000_bi;
+    big_num::BigInteger b = 98734567891234156167570454637567356712345998778000498749921_bi;
+    big_num::BigInteger c = a + b;
+    std::cout << c.ToBinaryString() << std::endl;
+    ASSERT_EQ(c.ToString(), "98735802458777688799701688282931932397692777679231743749921");
+}

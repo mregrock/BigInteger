@@ -9,7 +9,6 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <bitset>
 
 #define CHUNK_SIZE 32
 typedef unsigned long long chunk_t;
@@ -20,6 +19,10 @@ namespace str_ops {
 
     std::string Inc(const std::string &str_num);
 
+    [[nodiscard]] static std::vector <chunk_t> StringToNumeric(std::string);
+
+    [[nodiscard]] static std::string NumericToString(const std::vector <chunk_t> &);
+
     std::string operator>>(std::string str_num, int shift);
 
     std::string operator<<(std::string str_num, int shift);
@@ -27,8 +30,6 @@ namespace str_ops {
 
 namespace big_num {
     class BigInteger {
-        int precision_ = 100;
-        int base_ = 0;
         bool is_positive_ = true;
         std::vector <chunk_t> integral_;
         std::vector <chunk_t> fraction_;
@@ -39,6 +40,8 @@ namespace big_num {
         BigInteger();
 
         explicit BigInteger(std::string);
+
+        BigInteger (long long);
 
         ~BigInteger();
 
@@ -86,6 +89,8 @@ namespace big_num {
 
         friend std::istream &operator>>(std::istream &, BigInteger &);
 
+        [[nodiscard]] std::string ToStringIntegral() const;
+
         [[nodiscard]] std::string ToString() const;
 
         [[nodiscard]] std::string ToBinaryString() const;
@@ -104,13 +109,15 @@ namespace big_num {
 
         void SetSizeInChunks(const std::size_t &);
 
-        [[nodiscard]] BigInteger Pow(const BigInteger &, const int &times) const;
+        [[nodiscard]] static BigInteger Pow(const BigInteger &, int times);
 
         [[nodiscard]] std::size_t GetSizeInChunks() const;
 
         void PopChunk();
 
         void TrimLeadingZeroes();
+
+        void TrimFunc();
 
         void AddChunk(const chunk_t &);
 
