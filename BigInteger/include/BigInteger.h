@@ -90,8 +90,6 @@ namespace big_num {
 
         friend std::istream &operator>>(std::istream &, BigInteger &);
 
-        [[nodiscard]] std::string ToStringIntegral() const;
-
         [[nodiscard]] std::string ToString() const;
 
         [[nodiscard]] std::string ToBinaryString() const;

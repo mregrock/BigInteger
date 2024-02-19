@@ -1,17 +1,19 @@
 //
 // Created by Егор Кулин on 27.01.2024.
 //
-#include "../include/BigInteger.h"
 
+#include "../include/BigFloat.h"
+#include "../include/BigInteger.h"
 namespace big_num {
-    BigInteger &BigInteger::operator=(const BigInteger &other) {
+    BigFloat &BigFloat::operator=(const BigFloat &other) {
         this->integral_ = other.integral_;
         this->integral_size_ = other.integral_size_;
         this->is_positive_ = other.is_positive_;
+        this->exp_ = other.exp_;
         return *this;
     }
 
-    BigInteger operator+(const BigInteger &first, const BigInteger &second) {
+    BigFloat operator+(const BigFloat &first, const BigFloat &second) {
         if (first.is_positive_ ^ second.is_positive_) {
             if (first.is_positive_) {
                 return first - second.Abs();
@@ -20,7 +22,7 @@ namespace big_num {
         }
         std::size_t new_size = (first.integral_size_ > second.integral_size_ ? first.integral_size_
                                                                              : second.integral_size_);
-        BigInteger result;
+        BigFloat result;
         chunk_t remainder = 0;
         for (int i = 0; i < new_size; i++) {
             chunk_t chunks_sum = first.GetChunk(i) + second.GetChunk(i) + remainder;
@@ -41,14 +43,14 @@ namespace big_num {
         return result;
     }
 
-    BigInteger BigInteger::operator+=(const BigInteger &other) {
+    BigFloat BigFloat::operator+=(const BigFloat &other) {
         return (*this = *this + other);
     }
 
-    BigInteger operator-(const BigInteger &first_num, const BigInteger &second_num) {
-        BigInteger first(first_num);
-        BigInteger second(second_num);
-        BigInteger result;
+    BigFloat operator-(const BigFloat &first_num, const BigFloat &second_num) {
+        BigFloat first(first_num);
+        BigFloat second(second_num);
+        BigFloat result;
         if (first_num.is_positive_ ^ second_num.is_positive_) {
             if (first_num.is_positive_) {
                 return first_num + (-second_num);
@@ -68,7 +70,7 @@ namespace big_num {
         for (int i = 0; i < new_size; i++) {
             chunk_t chunk_res;
             if (first.GetChunk(i) < second.GetChunk(i) + remainder) {
-                chunk_res = first.GetChunk(i) + ((1ull << 32) - second.GetChunk(i) - remainder);
+                chunk_res = first.GetChunk(i) + ((1ull << CHUNK_SIZE) - second.GetChunk(i) - remainder);
                 remainder = 1;
             } else {
                 chunk_res = first.GetChunk(i) - second.GetChunk(i) - remainder;
@@ -80,18 +82,18 @@ namespace big_num {
         return result;
     }
 
-    BigInteger BigInteger::operator+() const {
+    BigFloat BigFloat::operator+() const {
         return *this;
     }
 
-    BigInteger BigInteger::operator-() const {
-        BigInteger result = *this;
+    BigFloat BigFloat::operator-() const {
+        BigFloat result = *this;
         result.is_positive_ = !result.is_positive_;
         return result;
     }
 
-    BigInteger operator*(const BigInteger &first, const BigInteger &second) {
-        BigInteger res;
+    BigFloat operator*(const BigFloat &first, const BigFloat &second) {
+        BigFloat res;
         res.SetSizeInChunks(first.integral_size_ + second.integral_size_ + 1);
         for (auto i = 0; i < first.integral_size_; ++i) {
             for (auto j = 0; j < second.integral_size_; ++j) {
@@ -105,75 +107,47 @@ namespace big_num {
         if (first.is_positive_ ^ second.is_positive_) {
             res.is_positive_ = false;
         }
+        int cnt_last = 0;
+        while (cnt_last != res.precision_) {
+            res.integral_.erase(res.integral_.begin());
+            res.integral_size_--;
+            cnt_last++;
+        }
         return res;
     }
 
-    //TODO: Fix Karatsuba multiplication
-    /*BigInteger KaratsubaMultiplication(const BigInteger &first, const BigInteger &second) {
-        if (first.integral_size_ < 2 || second.integral_size_ < 2) {
-            return first * second;
-        }
-        int n = std::max(first.integral_size_, second.integral_size_);
-        int n_2 = n / 2;
-        BigInteger high1, low1, high2, low2;
-        high1.SetSizeInChunks(n_2);
-        low1.SetSizeInChunks(n_2);
-        high2.SetSizeInChunks(n_2);
-        low2.SetSizeInChunks(n_2);
-        for (int i = 0; i < n_2; i++) {
-            high1.SetChunk(i, first.GetChunk(i));
-            low1.SetChunk(i, first.GetChunk(i + n_2));
-            high2.SetChunk(i, second.GetChunk(i));
-            low2.SetChunk(i, second.GetChunk(i + n_2));
-        }
-        BigInteger z0 = KaratsubaMultiplication(low1, low2);
-        BigInteger z1 = KaratsubaMultiplication(low1 + high1, low2 + high2);
-        BigInteger z2 = KaratsubaMultiplication(high1, high2);
-        return z2 * (1_bi << (2 * n_2)) + (z1 - z2 - z0) * (1_bi << n_2) + z0;
-    }*/
 
-
-    BigInteger BigInteger::operator*=(const BigInteger &other) {
+    BigFloat BigFloat::operator*=(const BigFloat &other) {
         return (*this = *this * other);
     }
 
-    BigInteger operator/(const BigInteger &left_num, const BigInteger &right_num) {
-        if (right_num == 0_bi){
-            throw std::overflow_error("Divide by zero exception");
-        }
-        BigInteger res;
-        BigInteger mult = 0_bi;
-        int left_num_size = static_cast<int>(left_num.integral_size_);
+    BigFloat operator/(const BigFloat &left_num, const BigFloat &right_num) {
+        BigFloat res;
         std::string bin_res;
-        for (int i = left_num_size - 1; i >= 0; i--) {
-            for (int bit = CHUNK_SIZE - 1; bit >= 0; bit--) {
-                int shift = (CHUNK_SIZE) * (i) + bit;
-                BigInteger add = (right_num << (shift));
-                if (mult + add <= left_num) {
-                    mult = mult + add;
-                    bin_res.push_back('1');
-                } else {
-                    bin_res.push_back('0');
-                }
-            }
+        if (right_num == 0_bf) {
+            throw std::overflow_error("Division by zero");
         }
-        res = BigInteger::CreateFromBinary(bin_res);
+        big_num::BigInteger left_num_new = left_num.ToBigIntNarrow();
+        big_num::BigInteger right_num_new = right_num.ToBigIntNarrow();
+        left_num_new = left_num_new << (left_num.precision_ * CHUNK_SIZE);
+        big_num::BigInteger res_new = left_num_new / right_num_new;
+        bin_res = res_new.ToBinaryString();
+        res = BigFloat::CreateFromBinary(bin_res);
         if (left_num.is_positive_ ^ right_num.is_positive_) {
             res.is_positive_ = false;
         }
         return res;
     }
 
-    BigInteger BigInteger::operator/=(const BigInteger &other) {
+    BigFloat BigFloat::operator/=(const BigFloat &other) {
         return (*this = *this / other);
     }
 
-    bool operator==(const BigInteger &left_num, const BigInteger &right_num) {
+    bool operator==(const BigFloat &left_num, const BigFloat &right_num) {
         std::size_t size_left = left_num.integral_size_;
         std::size_t size_right = right_num.integral_size_;
         if (left_num.is_positive_ != right_num.is_positive_) {
-            if (!(left_num.integral_size_ == 1 && left_num.integral_[0] == 0 && right_num.integral_size_ == 1 &&
-                  right_num.integral_[0] == 0)) {
+            if (!left_num.IsNull() || !right_num.IsNull()){
                 return false;
             }
         }
@@ -188,7 +162,7 @@ namespace big_num {
         return true;
     }
 
-    bool operator<(const BigInteger &left_num, const BigInteger &right_num) {
+    bool operator<(const BigFloat &left_num, const BigFloat &right_num) {
         int size_left = static_cast<int>(left_num.GetSizeInChunks());
         std::size_t size_right = right_num.GetSizeInChunks();
         if (left_num.is_positive_ != right_num.is_positive_) {
@@ -217,59 +191,40 @@ namespace big_num {
         return false;
     }
 
-    bool operator<=(const BigInteger &left_num, const BigInteger &right_num) {
+    bool operator<=(const BigFloat &left_num, const BigFloat &right_num) {
         return ((left_num < right_num) || (left_num == right_num));
     }
 
-    bool operator>(const BigInteger &left_num, const BigInteger &right_num) {
+    bool operator>(const BigFloat &left_num, const BigFloat &right_num) {
         return !(left_num <= right_num);
     }
 
-    bool operator>=(const BigInteger &left_num, const BigInteger &right_num) {
+    bool operator>=(const BigFloat &left_num, const BigFloat &right_num) {
         return !(left_num < right_num);
     }
 
-    BigInteger operator>>(const BigInteger &num, int shift) {
-        std::string bin_num = num.ToBinaryString();
-        std::string shifted_num = str_ops::operator>>(bin_num, shift);
-        return BigInteger::CreateFromBinary(shifted_num);
-    }
 
-    BigInteger operator<<(const BigInteger &num, int shift) {
-        int chunk_shift = shift / CHUNK_SIZE;
-        int bit_shift = shift % CHUNK_SIZE;
-        BigInteger result;
-        result.SetSizeInChunks(num.integral_size_ + chunk_shift + 1);
-        for (int i = 0; i < num.integral_size_; i++) {
-            result.integral_[i + chunk_shift] = (num.integral_[i] % ((1ull) << (CHUNK_SIZE - bit_shift))) << bit_shift;
-            result.integral_[i + chunk_shift + 1] += (num.integral_[i] / (1ull << (CHUNK_SIZE - bit_shift)));
-        }
-        result.TrimLeadingZeroes();
-        return result;
-    }
-
-
-    BigInteger BigInteger::Pow(const BigInteger &num, int times) {
-        BigInteger result = 1_bi;
+    BigFloat BigFloat::Pow(const BigFloat &num, const int &times) const {
+        BigFloat result = 1_bf;
         for (int i = 0; i < times; i++) {
             result *= num;
         }
         return result;
     }
 
-    std::istream &operator>>(std::istream &in, BigInteger &num) {
+    std::istream &operator>>(std::istream &in, BigFloat &num) {
         std::string str_num;
         in >> str_num;
-        num = BigInteger{str_num};
+        num = BigFloat{str_num};
         return in;
     }
 
-    std::ostream &operator<<(std::ostream &out, const BigInteger &number) {
+    std::ostream &operator<<(std::ostream &out, const BigFloat &number) {
         out << number.ToString();
         return out;
     }
 }
 
-big_num::BigInteger operator ""_bi(const char *s) {
-    return big_num::BigInteger{s};
+big_num::BigFloat operator ""_bf(const char *s) {
+    return big_num::BigFloat{s};
 }

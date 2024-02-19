@@ -49,6 +49,14 @@ TEST(Multiplication, FractionalMultiplicationWithNegative){
     ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
 }
 
+TEST(Multiplication, NegativeFractionalMultiplication){
+    big_num::BigFloat a = -12345673213.1233_bf;
+    big_num::BigFloat b = 9873456789570.4546_bf;
+    big_num::BigFloat c = a * b;
+    std::string res = "-121894471007930336353606.66685218";
+    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
+}
+
 TEST(Multiplication, NegativeFractionalMultiplicationWithNegative){
     big_num::BigFloat a = -12345673213.1233_bf;
     big_num::BigFloat b = -9873456789570.4546_bf;
@@ -56,4 +64,3 @@ TEST(Multiplication, NegativeFractionalMultiplicationWithNegative){
     std::string res = "121894471007930336353606.66685218";
     ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
 }
-
