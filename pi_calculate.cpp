@@ -29,7 +29,13 @@ void calculate_member(int first_, int second_) {
 }
 
 int main(int argc, char *argv[]) {
-    int precision = std::stoi(argv[1]);
+    int precision;
+    if (argc >= 2) {
+        precision = std::stoi(argv[1]);
+    }
+    else{
+        precision = 100;
+    }
     int precision_new = static_cast<int>(static_cast<double>(precision) * 3.33 / CHUNK_SIZE + 1) * CHUNK_SIZE;
     pi = 0_bf;
     one = 1_bf;
@@ -52,7 +58,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < THREADS; i++) {
         threads[i].join();
     }
-    std::cout << pi / 2_bf << std::endl;
+    std::cout << (pi / 2_bf).ToString(precision) << std::endl;
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
     std::cout << "Time: " << duration.count() << std::endl;

@@ -124,6 +124,9 @@ namespace big_num {
     BigFloat operator/(const BigFloat &left_num, const BigFloat &right_num) {
         BigFloat res;
         std::string bin_res;
+        if (right_num == 0_bf) {
+            throw std::overflow_error("Division by zero");
+        }
         big_num::BigInteger left_num_new = left_num.ToBigIntNarrow();
         big_num::BigInteger right_num_new = right_num.ToBigIntNarrow();
         left_num_new = left_num_new << (left_num.precision_ * CHUNK_SIZE);
@@ -144,8 +147,7 @@ namespace big_num {
         std::size_t size_left = left_num.integral_size_;
         std::size_t size_right = right_num.integral_size_;
         if (left_num.is_positive_ != right_num.is_positive_) {
-            if (!(left_num.integral_size_ == 1 && left_num.integral_[0] == 0 && right_num.integral_size_ == 1 &&
-                  right_num.integral_[0] == 0)) {
+            if (!left_num.IsNull() || !right_num.IsNull()){
                 return false;
             }
         }
@@ -212,7 +214,6 @@ namespace big_num {
         std::string shifted_num = str_ops::operator<<(bin_num, shift);
         return BigFloat::CreateFromBinary(shifted_num);
     }
-
 
     BigFloat BigFloat::Pow(const BigFloat &num, const int &times) const {
         BigFloat result = 1_bf;

@@ -85,10 +85,6 @@ namespace big_num {
 
         friend bool operator>=(const BigFloat &, const BigFloat &);
 
-        friend BigFloat operator>>(const BigFloat &, int);
-
-        friend BigFloat operator<<(const BigFloat &, int);
-
         friend std::ostream &operator<<(std::ostream &, const BigFloat &);
 
         friend std::istream &operator>>(std::istream &, BigFloat &);
@@ -113,6 +109,8 @@ namespace big_num {
 
         [[nodiscard]] bool IsPositive() const;
 
+        [[nodiscard]] bool IsNull() const;
+
         void SetChunk(const int &, const chunk_t &);
 
         void SetSizeInChunks(const std::size_t &);
@@ -126,8 +124,6 @@ namespace big_num {
         void PopChunk();
 
         void TrimLeadingZeroes();
-
-        void TrimFunc();
 
         void AddChunk(const chunk_t &);
 

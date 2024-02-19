@@ -33,6 +33,15 @@ namespace big_num {
         return this->is_positive_;
     }
 
+    bool BigFloat::IsNull() const {
+        for (int i = 0; i < this->integral_size_; i++) {
+            if (this->integral_[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     void Swap(BigFloat &first, BigFloat &second) {
         BigFloat third = first;
         first = second;

@@ -2,7 +2,7 @@
 // Created by Егор Кулин on 15.02.2024.
 //
 #include "BigInteger.h"
-
+#include <algorithm>
 namespace str_ops {
     std::string MultByTwo(const std::string &str_num) {
         std::string result;

@@ -51,10 +51,8 @@ namespace big_num {
                     if (next_str.size() != fraction_str.size()) {
                         next_str.erase(next_str.begin());
                         fraction_str = next_str;
-                        //std::cout << "1";
                         this->integral_[chunk_num] += (1ull << num_bit);
                     } else {
-                        //std::cout << "0";
                     }
                     fraction_str = next_str;
                 }

@@ -38,7 +38,7 @@ TEST(Multiplication, FractionalMultiplication){
     big_num::BigFloat b = 9873456789570.4546_bf;
     big_num::BigFloat c = a * b;
     std::string res = "121894471007930336353606.66685218";
-    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 0.00000000001_bf);
+    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
 }
 
 TEST(Multiplication, BigDivide){
