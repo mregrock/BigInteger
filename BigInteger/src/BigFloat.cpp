@@ -27,7 +27,7 @@ namespace big_num {
         for (int i = 0; i < new_size; i++) {
             chunk_t chunks_sum = first.GetChunk(i) + second.GetChunk(i) + remainder;
             remainder = 0;
-            if (chunks_sum > MAX_CHUNK) {
+            if (chunks_sum >= MAX_CHUNK) {
                 chunks_sum = chunks_sum % MAX_CHUNK;
                 remainder = 1;
             }
@@ -126,7 +126,7 @@ namespace big_num {
         std::string bin_res;
         big_num::BigInteger left_num_new = left_num.ToBigIntNarrow();
         big_num::BigInteger right_num_new = right_num.ToBigIntNarrow();
-        left_num_new = left_num_new << (PRECISION);
+        left_num_new = left_num_new << (left_num.precision_ * CHUNK_SIZE);
         big_num::BigInteger res_new = left_num_new / right_num_new;
         bin_res = res_new.ToBinaryString();
         res = BigFloat::CreateFromBinary(bin_res);

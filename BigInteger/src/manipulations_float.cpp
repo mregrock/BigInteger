@@ -63,6 +63,17 @@ namespace big_num {
         this->integral_[index] = num;
     }
 
+    void BigFloat::SetPrecision(int precision) {
+        while (precision > this->precision_){
+            this->AddChunk(0);
+            precision--;
+        }
+        while(precision < this->precision_){
+            this->PopChunk();
+            this->precision_--;
+        }
+    }
+
     BigInteger BigFloat::ToBigInt() const {
         BigInteger result;
         for (int i = this->precision_; i < this->integral_size_; i++) {

@@ -12,7 +12,7 @@
 #include "BigInteger.h"
 
 #define CHUNK_SIZE 32
-#define PRECISION 512
+#define PRECISION 672
 typedef unsigned long long chunk_t;
 #define MAX_CHUNK (1ull << CHUNK_SIZE)
 
@@ -99,6 +99,8 @@ namespace big_num {
 
         [[nodiscard]] std::string ToString() const;
 
+        [[nodiscard]] std::string ToString(int) const;
+
         [[nodiscard]] std::string ToBinaryString() const;
 
         [[nodiscard]] static BigFloat CreateFromBinary(const std::string &);
@@ -114,6 +116,8 @@ namespace big_num {
         void SetChunk(const int &, const chunk_t &);
 
         void SetSizeInChunks(const std::size_t &);
+
+        void SetPrecision(int);
 
         [[nodiscard]] BigFloat Pow(const BigFloat &, const int &times) const;
 

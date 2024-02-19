@@ -38,6 +38,23 @@ namespace big_num {
         return result;
     }
 
+    std::string BigFloat::ToString(int precision) const{
+        std::string result;
+        std::string integral_part = this->ToStringIntegral();
+        std::string fraction_part = this->ToStringFractional();
+        if (precision < fraction_part.size()){
+            fraction_part = fraction_part.substr(0, precision);
+        }
+        if (fraction_part != "0" && integral_part != "0") {
+            result = integral_part + "." + fraction_part;
+        } else if (fraction_part == "0") {
+            result = integral_part;
+        } else {
+            result = "0." + fraction_part;
+        }
+        return result;
+    }
+
     std::string BigFloat::ToStringIntegral() const {
         std::string result = "0";
         int integral_size = static_cast<int>(this->integral_size_);

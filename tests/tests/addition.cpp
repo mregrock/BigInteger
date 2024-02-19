@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "BigInteger.h"
+#include "BigFloat.h"
 
 TEST(Addition, SimpleAddition){
     big_num::BigInteger a = 1234567890_bi;
@@ -130,10 +131,42 @@ TEST(Addition, NegativeAdditionWithDifferentSizeAndNegativeAndCarry2){
     ASSERT_EQ(c.ToString(), "-12345678902469135781");
 }
 
-TEST(Addition, FractionalAddition){
+TEST(Addition, LargeAddition){
     big_num::BigInteger a = 1234567543532632131233645364575685346778901231245000000_bi;
     big_num::BigInteger b = 98734567891234156167570454637567356712345998778000498749921_bi;
     big_num::BigInteger c = a + b;
     std::cout << c.ToBinaryString() << std::endl;
     ASSERT_EQ(c.ToString(), "98735802458777688799701688282931932397692777679231743749921");
+}
+
+TEST(Addition, FractionalAddition){
+    big_num::BigFloat a = 99992381492340120439239410234.4235696394606_bf;
+    big_num::BigFloat b = 0401239421399491234921834.21341234_bf;
+    big_num::BigFloat c = a + b;
+    std::string res = "99992782731761519930474332068.6369819794606";
+    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
+}
+
+TEST(Addition, FractionalNegativeAddition){
+    big_num::BigFloat a = -99992381492340120439239410234.4235696394606_bf;
+    big_num::BigFloat b = 0401239421399491234921834.21341234_bf;
+    big_num::BigFloat c = a + b;
+    std::string res = "-99991980252918720948004488400.2101572994606";
+    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
+}
+
+TEST(Addition, FractionalAdditionWithNegative){
+    big_num::BigFloat a = 99992381492340120439239410234.4235696394606_bf;
+    big_num::BigFloat b = -0401239421399491234921834.21341234_bf;
+    big_num::BigFloat c = a + b;
+    std::string res = "99991980252918720948004488400.2101572994606";
+    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
+}
+
+TEST(Addition, FractionalNegativeAdditionWithNegative){
+    big_num::BigFloat a = -99992381492340120439239410234.4235696394606_bf;
+    big_num::BigFloat b = -0401239421399491234921834.21341234_bf;
+    big_num::BigFloat c = a + b;
+    std::string res = "-99992782731761519930474332068.6369819794606";
+    ASSERT_TRUE((c - big_num::BigFloat(res)).Abs() < 1_bf / 100);
 }

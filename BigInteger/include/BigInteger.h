@@ -9,6 +9,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 #define CHUNK_SIZE 32
 typedef unsigned long long chunk_t;

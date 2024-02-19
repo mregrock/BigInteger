@@ -108,29 +108,29 @@ namespace big_num {
         return res;
     }
 
-    BigInteger KaratsubaMultiplication(const BigInteger &first, const BigInteger &second) {
+    //TODO: Fix Karatsuba multiplication
+    /*BigInteger KaratsubaMultiplication(const BigInteger &first, const BigInteger &second) {
         if (first.integral_size_ < 2 || second.integral_size_ < 2) {
             return first * second;
         }
         int n = std::max(first.integral_size_, second.integral_size_);
-        int m = n / 2;
-        BigInteger first_low;
-        BigInteger first_high;
-        BigInteger second_low;
-        BigInteger second_high;
-        for (int i = 0; i < m; i++) {
-            first_low.AddChunk(first.GetChunk(i));
-            second_low.AddChunk(second.GetChunk(i));
+        int n_2 = n / 2;
+        BigInteger high1, low1, high2, low2;
+        high1.SetSizeInChunks(n_2);
+        low1.SetSizeInChunks(n_2);
+        high2.SetSizeInChunks(n_2);
+        low2.SetSizeInChunks(n_2);
+        for (int i = 0; i < n_2; i++) {
+            high1.SetChunk(i, first.GetChunk(i));
+            low1.SetChunk(i, first.GetChunk(i + n_2));
+            high2.SetChunk(i, second.GetChunk(i));
+            low2.SetChunk(i, second.GetChunk(i + n_2));
         }
-        for (int i = m; i < n; i++) {
-            first_high.AddChunk(first.GetChunk(i));
-            second_high.AddChunk(second.GetChunk(i));
-        }
-        BigInteger z0 = KaratsubaMultiplication(first_low, second_low);
-        BigInteger z1 = KaratsubaMultiplication(first_high, second_high);
-        BigInteger z2 = KaratsubaMultiplication(first_low + first_high, second_low + second_high);
-        return z1 * (1_bi << (2 * m)) + (z2 - z1 - z0) * (1_bi << m) + z0;
-    }
+        BigInteger z0 = KaratsubaMultiplication(low1, low2);
+        BigInteger z1 = KaratsubaMultiplication(low1 + high1, low2 + high2);
+        BigInteger z2 = KaratsubaMultiplication(high1, high2);
+        return z2 * (1_bi << (2 * n_2)) + (z1 - z2 - z0) * (1_bi << n_2) + z0;
+    }*/
 
 
     BigInteger BigInteger::operator*=(const BigInteger &other) {
@@ -138,6 +138,9 @@ namespace big_num {
     }
 
     BigInteger operator/(const BigInteger &left_num, const BigInteger &right_num) {
+        if (right_num == 0_bi){
+            throw std::overflow_error("Divide by zero exception");
+        }
         BigInteger res;
         BigInteger mult = 0_bi;
         int left_num_size = static_cast<int>(left_num.integral_size_);
@@ -233,14 +236,20 @@ namespace big_num {
     }
 
     BigInteger operator<<(const BigInteger &num, int shift) {
-        std::string bin_num = num.ToBinaryString();
+        int chunk_shift = shift / CHUNK_SIZE;
+        int bit_shift = shift % CHUNK_SIZE;
         BigInteger result;
-        std::string shifted_num = str_ops::operator<<(bin_num, shift);
-        return BigInteger::CreateFromBinary(shifted_num);
+        result.SetSizeInChunks(num.integral_size_ + chunk_shift + 1);
+        for (int i = 0; i < num.integral_size_; i++) {
+            result.integral_[i + chunk_shift] = (num.integral_[i] % ((1ull) << (CHUNK_SIZE - bit_shift))) << bit_shift;
+            result.integral_[i + chunk_shift + 1] += (num.integral_[i] / (1ull << (CHUNK_SIZE - bit_shift)));
+        }
+        result.TrimLeadingZeroes();
+        return result;
     }
 
 
-    BigInteger BigInteger::Pow(const BigInteger &num, int times){
+    BigInteger BigInteger::Pow(const BigInteger &num, int times) {
         BigInteger result = 1_bi;
         for (int i = 0; i < times; i++) {
             result *= num;
