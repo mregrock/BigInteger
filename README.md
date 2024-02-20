@@ -9,6 +9,7 @@
 Примерный вид сборки проекта
 ```bash
 git clone https://github.com/mregrock/BigInteger.git
+cd BigInteger
 mkdir cmake-build-release
 cd cmake-build-release
 cmake -DCMAKE_BUILD_TYPE=Release ..
@@ -18,8 +19,8 @@ cmake --build .
 ```bash
 cd tests
 cd extern
-cd googletests
-git clone https://github.com/google/googletest.git
+cd googletest
+git clone https://github.com/google/googletest.git googletest
 ```
 
 
