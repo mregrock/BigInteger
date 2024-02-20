@@ -1,9 +1,9 @@
 
 file(GLOB_RECURSE TEST_SOURCES "*.cpp")
+add_subdirectory(extern/googletest)
+include(GoogleTest)
 find_package(GTest)
 if (GTest_FOUND)
-    add_subdirectory(extern/googletest)
-    include(GoogleTest)
     add_executable(tests ${TEST_SOURCES})
     target_link_libraries(tests gtest gtest_main ${PROJECT_NAME})
     include_directories(include)
