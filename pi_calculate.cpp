@@ -26,6 +26,7 @@ void calculate_member(int first_, int second_) {
     }
     std::lock_guard <std::mutex> lock(pi_mutex);
     pi += member;
+
 }
 
 int main(int argc, char *argv[]) {
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]) {
         member_num += precision_per_threads;
     }
     big_num::BigFloat power = 1_bf;
-    for (int i = 0; i < precision; i++) {
+    for (int i = 0; i < precision + precision_per_threads + 5; i++) {
         powers_of_16.push_back(power);
         power *= sixteen;
     }
@@ -63,7 +64,6 @@ int main(int argc, char *argv[]) {
     }
     if (precision == 2) {
         std::cout << "3.14" << std::endl;
-        return 0;
     } else {
         std::cout << (pi / 2_bf).ToString(precision) << std::endl;
     }
