@@ -14,7 +14,7 @@ cd cmake-build-release
 cmake _DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 ```
-Сборка тестов
+Установка библиотеки тестирования
 ```bash
 cd tests
 cd extern
