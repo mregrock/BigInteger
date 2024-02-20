@@ -4,7 +4,7 @@
 
 # Сборка
 Для лучшей перформативности используйте тип сборки Release
-Для тестирования используется отк
+Для тестирования используется открытый репозиторий GoogleTests
 
 Примерный вид сборки проекта
 ```bash
@@ -14,6 +14,14 @@ cd cmake-build-release
 cmake _DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 ```
+Сборка тестов
+```bash
+cd tests
+cd extern
+cd googletests
+git clone https://github.com/google/googletest.git
+```
+
 
 
 
