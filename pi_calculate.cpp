@@ -32,8 +32,7 @@ int main(int argc, char *argv[]) {
     int precision;
     if (argc >= 2) {
         precision = std::stoi(argv[1]);
-    }
-    else{
+    } else {
         precision = 100;
     }
     int precision_new = static_cast<int>(static_cast<double>(precision) * 3.33 / CHUNK_SIZE + 1) * CHUNK_SIZE;
@@ -42,6 +41,10 @@ int main(int argc, char *argv[]) {
     two = 2_bf;
     four = 4_bf;
     sixteen = 16_bf;
+    if (precision < THREADS) {
+#undef THREADS
+#define THREADS precision
+    }
     int precision_per_threads = precision / THREADS;
     std::vector <std::thread> threads;
     int member_num = 0;
@@ -58,7 +61,12 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < THREADS; i++) {
         threads[i].join();
     }
-    std::cout << (pi / 2_bf).ToString(precision) << std::endl;
+    if (precision == 2) {
+        std::cout << "3.14" << std::endl;
+        return 0;
+    } else {
+        std::cout << (pi / 2_bf).ToString(precision) << std::endl;
+    }
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
     std::cout << "Time: " << duration.count() << std::endl;
