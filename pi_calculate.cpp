@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 #undef THREADS
 #define THREADS precision
     }
-    int precision_per_threads = precision / THREADS;
+    int precision_per_threads = precision / (THREADS - 1);
     std::vector <std::thread> threads;
     int member_num = 0;
     auto start_time = std::chrono::high_resolution_clock::now();
