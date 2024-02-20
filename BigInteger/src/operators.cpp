@@ -11,6 +11,7 @@ namespace big_num {
         return *this;
     }
 
+
     BigInteger operator+(const BigInteger &first, const BigInteger &second) {
         if (first.is_positive_ ^ second.is_positive_) {
             if (first.is_positive_) {
