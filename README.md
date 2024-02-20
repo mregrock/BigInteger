@@ -8,7 +8,7 @@
 
 Примерный вид сборки проекта
 ```bash
-git clone https://github.com/mregrock/BigInteger.git
+git clone --recurse-submodules https://github.com/mregrock/BigInteger.git
 cd BigInteger
 mkdir cmake-build-release
 cd cmake-build-release
