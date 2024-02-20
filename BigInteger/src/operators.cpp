@@ -41,7 +41,7 @@ namespace big_num {
         return result;
     }
 
-    BigInteger BigInteger::operator+=(const BigInteger &other) {
+    BigInteger &BigInteger::operator+=(const BigInteger &other) {
         return (*this = *this + other);
     }
 
@@ -133,12 +133,12 @@ namespace big_num {
     }*/
 
 
-    BigInteger BigInteger::operator*=(const BigInteger &other) {
+    BigInteger &BigInteger::operator*=(const BigInteger &other) {
         return (*this = *this * other);
     }
 
     BigInteger operator/(const BigInteger &left_num, const BigInteger &right_num) {
-        if (right_num == 0_bi){
+        if (right_num == 0_bi) {
             throw std::overflow_error("Divide by zero exception");
         }
         BigInteger res;
@@ -164,7 +164,7 @@ namespace big_num {
         return res;
     }
 
-    BigInteger BigInteger::operator/=(const BigInteger &other) {
+    BigInteger &BigInteger::operator/=(const BigInteger &other) {
         return (*this = *this / other);
     }
 

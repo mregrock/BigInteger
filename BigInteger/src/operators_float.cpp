@@ -4,6 +4,7 @@
 
 #include "../include/BigFloat.h"
 #include "../include/BigInteger.h"
+
 namespace big_num {
     BigFloat &BigFloat::operator=(const BigFloat &other) {
         this->integral_ = other.integral_;
@@ -43,7 +44,7 @@ namespace big_num {
         return result;
     }
 
-    BigFloat BigFloat::operator+=(const BigFloat &other) {
+    BigFloat& BigFloat::operator+=(const BigFloat &other) {
         return (*this = *this + other);
     }
 
@@ -82,6 +83,10 @@ namespace big_num {
         return result;
     }
 
+    BigFloat& BigFloat::operator-=(const BigFloat &other) {
+        return (*this = *this - other);
+    }
+
     BigFloat BigFloat::operator+() const {
         return *this;
     }
@@ -117,7 +122,7 @@ namespace big_num {
     }
 
 
-    BigFloat BigFloat::operator*=(const BigFloat &other) {
+    BigFloat &BigFloat::operator*=(const BigFloat &other) {
         return (*this = *this * other);
     }
 
@@ -139,7 +144,7 @@ namespace big_num {
         return res;
     }
 
-    BigFloat BigFloat::operator/=(const BigFloat &other) {
+    BigFloat &BigFloat::operator/=(const BigFloat &other) {
         return (*this = *this / other);
     }
 
@@ -147,7 +152,7 @@ namespace big_num {
         std::size_t size_left = left_num.integral_size_;
         std::size_t size_right = right_num.integral_size_;
         if (left_num.is_positive_ != right_num.is_positive_) {
-            if (!left_num.IsNull() || !right_num.IsNull()){
+            if (!left_num.IsNull() || !right_num.IsNull()) {
                 return false;
             }
         }

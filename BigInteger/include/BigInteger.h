@@ -56,21 +56,21 @@ namespace big_num {
 
         friend BigInteger operator+(const BigInteger &, const BigInteger &);
 
-        BigInteger operator+=(const BigInteger &);
+        BigInteger& operator+=(const BigInteger &);
 
         friend BigInteger operator-(const BigInteger &, const BigInteger &);
 
-        BigInteger operator-=(const BigInteger &);
+        BigInteger& operator-=(const BigInteger &);
 
         friend BigInteger operator*(const BigInteger &, const BigInteger &);
 
         friend BigInteger KaratsubaMultiplication(const BigInteger &, const BigInteger &);
 
-        BigInteger operator*=(const BigInteger &);
+        BigInteger& operator*=(const BigInteger &);
 
         friend BigInteger operator/(const BigInteger &, const BigInteger &);
 
-        BigInteger operator/=(const BigInteger &);
+        BigInteger& operator/=(const BigInteger &);
 
         friend bool operator==(const BigInteger &, const BigInteger &);
 

@@ -59,21 +59,21 @@ namespace big_num {
 
         friend BigFloat operator+(const BigFloat &, const BigFloat &);
 
-        BigFloat operator+=(const BigFloat &);
+        BigFloat &operator+=(const BigFloat &);
 
         friend BigFloat operator-(const BigFloat &, const BigFloat &);
 
-        BigFloat operator-=(const BigFloat &);
+        BigFloat &operator-=(const BigFloat &);
 
         friend BigFloat operator*(const BigFloat &, const BigFloat &);
 
         friend BigFloat KaratsubaMultiplication(const BigFloat &, const BigFloat &);
 
-        BigFloat operator*=(const BigFloat &);
+        BigFloat &operator*=(const BigFloat &);
 
         friend BigFloat operator/(const BigFloat &, const BigFloat &);
 
-        BigFloat operator/=(const BigFloat &);
+        BigFloat &operator/=(const BigFloat &);
 
         friend bool operator==(const BigFloat &, const BigFloat &);
 
