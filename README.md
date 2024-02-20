@@ -11,7 +11,7 @@
 git clone https://github.com/mregrock/BigInteger.git
 mkdir cmake-build-release
 cd cmake-build-release
-cmake _DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 ```
 Установка библиотеки тестирования
