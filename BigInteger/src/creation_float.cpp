@@ -101,7 +101,7 @@ namespace big_num {
         for (int i = bin_str_size - 1; i >= last_index; i--) {
             result.integral_[num_chunk] += (static_cast<long long>(bin_str[i] - '0') << count_bit);
             count_bit++;
-            if (count_bit == 32) {
+            if (count_bit == CHUNK_SIZE) {
                 count_bit = 0;
                 num_chunk++;
                 result.AddChunk(0);
