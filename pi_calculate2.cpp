@@ -19,17 +19,14 @@ namespace {
 }
 #define THREADS std::thread::hardware_concurrency()
 
-void calculate_member(int first_, int second_) {
+void calculate_member(int i) {
     big_num::BigFloat member = 0_bf;
-    for (int i = first_; i < second_; i++) {
-        big_num::BigFloat first_mem = (four / big_num::BigFloat(4 * i + 1));
-        big_num::BigFloat second_mem = (four / big_num::BigFloat(8 * i + 3));
-        big_num::BigFloat third_mem = (two / big_num::BigFloat(4 * i + 2));
-        big_num::BigFloat fourth_mem = (one / big_num::BigFloat(8 * i + 7));
-        big_num::BigFloat fifth_mem = first_mem + second_mem + third_mem - fourth_mem;
-        member += fifth_mem / powers_of_16[i];
-    }
-    std::lock_guard <std::mutex> lock(pi_mutex);
+    big_num::BigFloat first_mem = (four / big_num::BigFloat(4 * i + 1));
+    big_num::BigFloat second_mem = (four / big_num::BigFloat(8 * i + 3));
+    big_num::BigFloat third_mem = (two / big_num::BigFloat(4 * i + 2));
+    big_num::BigFloat fourth_mem = (one / big_num::BigFloat(8 * i + 7));
+    big_num::BigFloat fifth_mem = first_mem + second_mem + third_mem - fourth_mem;
+    member += fifth_mem / powers_of_16[i];
     pi += member;
 
 }
@@ -49,18 +46,14 @@ int main(int argc, char *argv[]) {
     int precision_per_threads = precision / (THREADS - 1);
     std::vector <std::thread> threads;
     int member_num = 0;
-    auto start_time = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < THREADS; i++) {
-        threads.push_back(std::thread(calculate_member, member_num, member_num + precision_per_threads));
-        member_num += precision_per_threads;
-    }
     big_num::BigFloat power = 1_bf;
     for (int i = 0; i < precision + precision_per_threads + 5; i++) {
         powers_of_16.push_back(power);
         power *= sixteen;
     }
-    for (int i = 0; i < THREADS; i++) {
-        threads[i].join();
+    auto start_time = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < precision; i++) {
+        calculate_member(i);
     }
     if (precision == 2) {
         std::cout << "3.14" << std::endl;
